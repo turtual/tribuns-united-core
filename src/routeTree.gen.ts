@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DogrulamaRouteImport } from './routes/dogrulama'
 import { Route as IndexRouteImport } from './routes/index'
 
+const DogrulamaRoute = DogrulamaRouteImport.update({
+  id: '/dogrulama',
+  path: '/dogrulama',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +25,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dogrulama': typeof DogrulamaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dogrulama': typeof DogrulamaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dogrulama': typeof DogrulamaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/dogrulama'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/dogrulama'
+  id: '__root__' | '/' | '/dogrulama'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DogrulamaRoute: typeof DogrulamaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dogrulama': {
+      id: '/dogrulama'
+      path: '/dogrulama'
+      fullPath: '/dogrulama'
+      preLoaderRoute: typeof DogrulamaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DogrulamaRoute: DogrulamaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
