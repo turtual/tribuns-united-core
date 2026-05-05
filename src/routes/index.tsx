@@ -1,803 +1,508 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 export const Route = createFileRoute("/")({
-  component: MatchScreen,
+  component: MatchLiveScreen,
 });
 
 /* ───────── Icons ───────── */
 
-function IconCalendar() {
+function IconChevronLeft() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3.5" y="5" width="17" height="16" rx="2.5" />
-      <path d="M3.5 10 H20.5 M8 3 V7 M16 3 V7" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 6 L9 12 L15 18" />
     </svg>
   );
 }
-function IconChevron({ dir = "right", size = 16 }: { dir?: "right" | "down"; size?: number }) {
-  const d = dir === "right" ? "M9 6 L15 12 L9 18" : "M6 9 L12 15 L18 9";
+function IconCheck({ size = 8 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d={d} />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12 L10 17 L19 7" />
     </svg>
   );
 }
-function IconEye() {
+function IconArrowUp() {
   return (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 12 C4 6.5 8 4 12 4 C16 4 20 6.5 22 12 C20 17.5 16 20 12 20 C8 20 4 17.5 2 12 Z" />
-      <circle cx="12" cy="12" r="3.2" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 19 V5 M5 12 L12 5 L19 12" />
     </svg>
   );
 }
-function IconClose() {
+function IconSmile() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <path d="M6 6 L18 18 M18 6 L6 18" />
-    </svg>
-  );
-}
-function IconBall() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="9" />
-      <path d="M12 5 L14 9 L12 13 L10 9 Z M12 13 L8 16 M12 13 L16 16 M14 9 L18 9 M10 9 L6 9" />
-    </svg>
-  );
-}
-function IconCard({ color }: { color: string }) {
-  return <span className="inline-block rounded-sm" style={{ width: 10, height: 14, background: color }} />;
-}
-
-/* Tab bar icons */
-function IconHome({ filled }: { filled?: boolean }) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 11 L12 4 L20 11 V20 C20 20.5 19.5 21 19 21 H15 V14 H9 V21 H5 C4.5 21 4 20.5 4 20 Z" />
-    </svg>
-  );
-}
-function IconNews({ filled }: { filled?: boolean }) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5 H17 C17.6 5 18 5.4 18 6 V19 C18 20 18.8 21 20 21 C19 21 4 21 4 21 C3.4 21 3 20.6 3 20 V6 C3 5.4 3.4 5 4 5 Z" />
-      <path d="M18 9 H21 V19 C21 20 20.5 21 20 21" />
-      <path d="M6 9 H15 M6 13 H15 M6 17 H12" stroke={filled ? "white" : "currentColor"} />
-    </svg>
-  );
-}
-function IconMatch({ filled }: { filled?: boolean }) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 3 L14 8 L19 9 M12 3 L10 8 L5 9 M14 8 L12 13 L10 8 M5 9 L8 14 L7 19 M19 9 L16 14 L17 19 M8 14 H16 M7 19 L12 17 L17 19" stroke={filled ? "white" : "currentColor"} />
-    </svg>
-  );
-}
-function IconCommunity() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="9" r="3.2" />
-      <circle cx="17" cy="10" r="2.6" />
-      <path d="M3 19 C3 15.5 6 13.5 9 13.5 C12 13.5 15 15.5 15 19" />
-      <path d="M15 14 C18 14 21 15.5 21 18.5" />
-    </svg>
-  );
-}
-function IconProfile() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8.5" r="3.6" />
-      <path d="M4.5 20 C5.5 16 8.5 14.5 12 14.5 C15.5 14.5 18.5 16 19.5 20" />
+      <path d="M8.5 14 C9.5 15.5 10.7 16 12 16 C13.3 16 14.5 15.5 15.5 14" />
+      <circle cx="9" cy="10" r="0.6" fill="currentColor" />
+      <circle cx="15" cy="10" r="0.6" fill="currentColor" />
     </svg>
   );
 }
 
-/* ───────── Bits ───────── */
+/* ───────── Status bar ───────── */
 
-function LiveDot({ size = 8 }: { size?: number }) {
+function StatusBar() {
   return (
-    <span className="relative inline-flex" style={{ width: size, height: size }}>
-      <span
-        className="absolute inset-0 rounded-pill animate-ping"
-        style={{ background: "var(--primary)", opacity: 0.55 }}
-      />
-      <span
-        className="relative inline-block rounded-pill"
-        style={{ width: size, height: size, background: "var(--primary)" }}
-      />
-    </span>
-  );
-}
-
-function TeamLogo({ tone, mono, size = 32 }: { tone: string; mono: string; size?: number }) {
-  return (
-    <div
-      className="rounded-pill flex items-center justify-center shrink-0"
-      style={{ width: size, height: size, background: tone }}
-    >
-      <span
-        className="font-display"
-        style={{ color: "white", fontWeight: 600, fontSize: size * 0.36, letterSpacing: "0.02em" }}
-      >
-        {mono}
-      </span>
+    <div className="flex items-center justify-between px-6 pt-2 pb-1 text-white" style={{ height: 44 }}>
+      <span className="text-[15px] font-semibold tracking-tight">21:47</span>
+      <div className="flex items-center gap-1.5">
+        {/* signal */}
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="6" rx="0.5"/><rect x="9" y="2.5" width="3" height="8.5" rx="0.5"/><rect x="13.5" y="0" width="3" height="11" rx="0.5"/></svg>
+        <span className="text-[11px] font-semibold">5G</span>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.5"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.5"/></svg>
+      </div>
     </div>
   );
 }
 
-function LeagueBadge({ name }: { name: string }) {
+/* ───────── Team logo placeholders (gradient circles) ───────── */
+
+function TeamLogo({ team, size = 40 }: { team: "GS" | "FB"; size?: number }) {
+  const bg =
+    team === "GS"
+      ? "linear-gradient(135deg, #FDB912 0%, #A90432 100%)"
+      : "linear-gradient(135deg, #FFE600 0%, #00296B 100%)";
+  const initials = team === "GS" ? "GS" : "FB";
+  return (
+    <div
+      className="flex items-center justify-center rounded-full font-display font-semibold text-white shadow-lg"
+      style={{ width: size, height: size, background: bg, fontSize: size * 0.36, letterSpacing: "0.02em" }}
+    >
+      {initials}
+    </div>
+  );
+}
+
+/* ───────── Match header ───────── */
+
+function MatchHeader({ scoreShake }: { scoreShake: boolean }) {
+  return (
+    <header
+      className="sticky top-0 z-30 text-white"
+      style={{
+        background: "linear-gradient(180deg, #A90432 0%, #7C0319 100%)",
+        borderBottom: "1px solid #FDB912",
+      }}
+    >
+      <StatusBar />
+      {/* Top row */}
+      <div className="flex items-center justify-between px-4" style={{ height: 44 }}>
+        <button className="text-white -ml-1 p-1" aria-label="Geri">
+          <IconChevronLeft />
+        </button>
+        <div className="t-caption text-white/70" style={{ letterSpacing: "0.15em" }}>
+          RAMS PARK
+        </div>
+        <div
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1"
+          style={{ background: "#FDB912", color: "#7C0319" }}
+        >
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full" style={{ background: "#A90432", opacity: 0.7 }} />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full" style={{ background: "#A90432" }} />
+          </span>
+          <span className="font-sans font-semibold text-[12px]" style={{ letterSpacing: "0.02em" }}>CANLI 67'</span>
+        </div>
+      </div>
+      {/* Bottom row */}
+      <div className="grid grid-cols-3 items-center px-4 pb-3" style={{ minHeight: 76 }}>
+        <div className="flex items-center gap-2.5">
+          <TeamLogo team="GS" />
+          <div className="font-display font-semibold text-[16px] text-white leading-tight">Galatasaray</div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div
+            className={`font-display font-semibold text-[32px] leading-none ${scoreShake ? "animate-[shake_0.5s_ease-in-out]" : ""}`}
+            style={{ color: "#FDB912" }}
+          >
+            2 - 1
+          </div>
+          <div className="t-tiny mt-1 text-white/70">67' İLK YARI BİTTİ</div>
+        </div>
+        <div className="flex items-center justify-end gap-2.5">
+          <div className="font-display font-semibold text-[16px] text-white leading-tight text-right">Fenerbahçe</div>
+          <TeamLogo team="FB" />
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ───────── Tribün switcher ───────── */
+
+function TribunSwitcher() {
+  return (
+    <div className="grid grid-cols-2 gap-2 px-4 py-2" style={{ background: "#7C0319" }}>
+      {/* GS active */}
+      <div className="rounded-xl p-3" style={{ background: "#FDB912" }}>
+        <div className="flex items-center gap-1.5">
+          <span className="inline-block h-3 w-3 rounded-sm" style={{ background: "linear-gradient(135deg, #FDB912 0%, #A90432 100%)", border: "1px solid #7C0319" }} />
+          <span className="font-display font-semibold text-[12px]" style={{ color: "#7C0319", letterSpacing: "0.08em" }}>
+            GS TRİBÜNÜ
+          </span>
+        </div>
+        <div className="mt-1 flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#3B6D11]" />
+          <span className="t-caption" style={{ color: "#7C0319", opacity: 0.7 }}>12.4K aktif</span>
+        </div>
+      </div>
+      {/* FB inactive */}
+      <button className="rounded-xl p-3 text-left transition-colors hover:bg-white/15" style={{ background: "rgba(255,255,255,0.10)" }}>
+        <div className="flex items-center gap-1.5">
+          <span className="inline-block h-3 w-3 rounded-sm" style={{ background: "linear-gradient(135deg, #FFE600 0%, #00296B 100%)" }} />
+          <span className="font-display font-semibold text-[12px] text-white" style={{ letterSpacing: "0.08em" }}>
+            FB TRİBÜNÜ
+          </span>
+        </div>
+        <div className="mt-1 flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#3B6D11]" />
+          <span className="t-caption text-white/70">8.7K aktif</span>
+        </div>
+      </button>
+    </div>
+  );
+}
+
+/* ───────── Tab bar ───────── */
+
+function TabBar({ active, onChange }: { active: string; onChange: (t: string) => void }) {
+  const tabs = ["Sohbet", "İstatistik", "Olay"];
+  return (
+    <div className="flex px-4" style={{ background: "#7C0319", height: 44, borderBottom: "1px solid rgba(253,185,18,0.15)" }}>
+      {tabs.map((t) => {
+        const isActive = active === t;
+        return (
+          <button
+            key={t}
+            onClick={() => onChange(t)}
+            className="relative flex-1 font-display font-semibold text-[14px] transition-opacity"
+            style={{ color: "white", opacity: isActive ? 1 : 0.6 }}
+          >
+            {t}
+            {isActive && (
+              <span
+                className="absolute left-1/2 -translate-x-1/2 rounded-full"
+                style={{ bottom: 0, width: 32, height: 3, background: "#FDB912" }}
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ───────── Avatar ───────── */
+
+function Avatar({ size = 32, badge }: { size?: number; badge?: "verified" | "red" | "yellow" }) {
+  const badgeColor =
+    badge === "verified" ? "#185FA5" : badge === "red" ? "#A32D2D" : badge === "yellow" ? "#FDB912" : null;
+  return (
+    <div className="relative shrink-0">
+      <div
+        className="rounded-full"
+        style={{
+          width: size,
+          height: size,
+          background: "linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04))",
+          border: "1px solid rgba(253,185,18,0.2)",
+        }}
+      />
+      {badgeColor && (
+        <span
+          className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full text-white"
+          style={{ width: 14, height: 14, background: badgeColor, border: "2px solid #7C0319" }}
+        >
+          {badge === "verified" && <IconCheck size={8} />}
+          {badge === "red" && <span className="font-display text-[8px] font-semibold leading-none">★</span>}
+          {badge === "yellow" && <span className="font-display text-[8px] font-semibold leading-none" style={{ color: "#7C0319" }}>✦</span>}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ───────── Status pill (SPOR YAZARI / EFSANE / FENOMEN) ───────── */
+
+function RolePill({ label, color }: { label: string; color: string }) {
   return (
     <span
-      className="rounded-pill px-2 py-0.5"
-      style={{
-        background: "var(--bg-secondary)",
-        color: "var(--text-secondary)",
-        fontFamily: "var(--font-sans)",
-        fontWeight: 500,
-        fontSize: 10,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-      }}
+      className="inline-block rounded-full px-1.5 py-0.5 font-sans font-semibold uppercase text-white"
+      style={{ background: color, fontSize: 9, letterSpacing: "0.08em", lineHeight: 1.2 }}
     >
-      {name}
+      {label}
     </span>
   );
 }
 
-/* ───────── Types ───────── */
+/* ───────── Chat message ───────── */
 
-type Team = { name: string; mono: string; tone: string };
-type Match = {
-  id: string;
-  league: string;
-  home: Team;
-  away: Team;
-  homeScore?: number;
-  awayScore?: number;
-  minute?: string;
-  time?: string;
-  date?: string;
-  stadium?: string;
-  isMyTeam?: boolean; // user's team is in this match
-  myTeamSide?: "home" | "away";
-  events?: { minute: string; type: "goal" | "yellow" | "red"; team: "home" | "away"; player: string }[];
-  chatActive?: boolean;
-};
+type Role = "fan" | "yazar" | "efsane" | "fenomen";
 
-const MY_TEAM = "Galatasaray";
+interface ChatMsgProps {
+  role: Role;
+  username: string;
+  text: string;
+  time: string;
+}
 
-/* ───────── Match Card ───────── */
+function ChatMessage({ role, username, text, time }: ChatMsgProps) {
+  const isSpecial = role !== "fan";
+  const bubbleBg = role === "fan" ? "#8B0526" : "#A5163C";
+  const borderColor =
+    role === "yazar" ? "#185FA5" : role === "efsane" ? "#A32D2D" : role === "fenomen" ? "#FDB912" : "transparent";
+  const badgeKind: "verified" | "red" | "yellow" | undefined =
+    role === "yazar" ? "verified" : role === "efsane" ? "red" : role === "fenomen" ? "yellow" : undefined;
+  const rolePill =
+    role === "yazar"
+      ? { label: "SPOR YAZARI", color: "#185FA5" }
+      : role === "efsane"
+      ? { label: "EFSANE", color: "#A32D2D" }
+      : role === "fenomen"
+      ? { label: "FENOMEN", color: "#C99000" }
+      : null;
 
-function MatchRow({ team, score, isMine, time }: { team: Team; score?: number; isMine?: boolean; time?: string }) {
+  return (
+    <div className="flex items-end gap-2 px-4 animate-[slideUp_0.3s_ease-out]">
+      <Avatar badge={badgeKind} />
+      <div
+        className="relative max-w-[280px]"
+        style={{
+          background: bubbleBg,
+          borderRadius: "16px 16px 16px 4px",
+          padding: "10px 14px 8px",
+          borderLeft: isSpecial ? `2px solid ${borderColor}` : undefined,
+        }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="font-sans font-medium text-[12px]" style={{ color: "#FDB912" }}>
+            {username}
+          </span>
+          {rolePill && <RolePill label={rolePill.label} color={rolePill.color} />}
+        </div>
+        <div className="mt-0.5 font-sans text-[14px] leading-[20px] text-white">{text}</div>
+        <div className="mt-0.5 text-right font-sans text-[10px] text-white/50">{time}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ───────── Poll card ───────── */
+
+function PollCard() {
+  const [vote, setVote] = useState<number | null>(null);
+  const options = [
+    { label: "Evet, formda", pct: 64 },
+    { label: "Hayır, Icardi devam etsin", pct: 36 },
+  ];
   return (
     <div
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl relative"
-      style={{
-        background: isMine ? "var(--bg-primary)" : "transparent",
-      }}
+      className="mx-4 my-1 rounded-2xl p-5 animate-[slideUp_0.3s_ease-out]"
+      style={{ background: "#FDB912", color: "#7C0319" }}
     >
-      {isMine && (
-        <span
-          className="absolute left-0 top-2 bottom-2 rounded-pill"
-          style={{ width: 3, background: "var(--primary)" }}
-        />
-      )}
-      <TeamLogo tone={team.tone} mono={team.mono} />
-      <span
-        className="flex-1 font-display text-text-primary truncate"
-        style={{ fontWeight: isMine ? 600 : 500, fontSize: 16 }}
-      >
-        {team.name}
-      </span>
-      {score !== undefined ? (
-        <span className="font-display text-text-primary" style={{ fontWeight: 600, fontSize: 24, fontVariantNumeric: "tabular-nums" }}>
-          {score}
-        </span>
-      ) : time ? (
-        <span className="font-display text-text-secondary" style={{ fontWeight: 500, fontSize: 14, fontVariantNumeric: "tabular-nums" }}>
-          {time}
-        </span>
-      ) : null}
-    </div>
-  );
-}
-
-function LiveCard({ m, onJoin, onGuest }: { m: Match; onJoin: () => void; onGuest: () => void }) {
-  return (
-    <article
-      className="bg-surface rounded-2xl border"
-      style={{ borderColor: "var(--border-tertiary)", padding: 16 }}
-    >
-      <div className="flex items-center justify-between">
-        <LeagueBadge name={m.league} />
-        <div className="flex items-center gap-1.5">
-          <LiveDot />
-          <span
-            className="font-display"
-            style={{ color: "var(--primary)", fontWeight: 600, fontSize: 13, letterSpacing: "0.04em" }}
-          >
-            {m.minute}
-          </span>
-        </div>
+      <div className="font-display font-semibold text-[11px]" style={{ letterSpacing: "0.12em" }}>
+        TRİBÜN SORUYOR
       </div>
-
-      <div className="mt-3 flex flex-col gap-1">
-        <MatchRow team={m.home} score={m.homeScore} isMine={m.isMyTeam && m.myTeamSide === "home"} />
-        <MatchRow team={m.away} score={m.awayScore} isMine={m.isMyTeam && m.myTeamSide === "away"} />
+      <div className="mt-2 font-display font-semibold text-[18px] leading-[24px]">
+        Yarın Mertens ilk 11'de mi başlasın?
       </div>
-
-      <div className="mt-4">
-        {m.isMyTeam ? (
-          <button
-            type="button"
-            onClick={onJoin}
-            className="w-full rounded-pill flex items-center justify-center gap-2 transition-colors"
-            style={{
-              height: 44,
-              background: "var(--primary)",
-              color: "white",
-              fontFamily: "var(--font-sans)",
-              fontWeight: 500,
-              fontSize: 14,
-              letterSpacing: "0.01em",
-            }}
-          >
-            <LiveDot size={6} />
-            Tribüne Gir
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onGuest}
-            className="w-full rounded-pill flex items-center justify-center gap-1.5 border transition-colors"
-            style={{
-              height: 44,
-              background: "white",
-              borderColor: "var(--border)",
-              color: "var(--text-secondary)",
-              fontFamily: "var(--font-sans)",
-              fontWeight: 500,
-              fontSize: 14,
-            }}
-          >
-            Misafir olarak gir
-            <IconChevron dir="right" size={16} />
-          </button>
-        )}
-      </div>
-    </article>
-  );
-}
-
-function TodayCard({ m, onGuest, onJoin }: { m: Match; onGuest: () => void; onJoin: () => void }) {
-  return (
-    <article
-      className="bg-surface rounded-2xl border"
-      style={{ borderColor: "var(--border-tertiary)", padding: 16 }}
-    >
-      <div className="flex items-center justify-between">
-        <LeagueBadge name={m.league} />
-        <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--text-tertiary)" }}>
-          Bugün
-        </span>
-      </div>
-
-      <div className="mt-4 flex items-center gap-3">
-        <div className="flex-1 flex flex-col items-center gap-2">
-          <TeamLogo tone={m.home.tone} mono={m.home.mono} size={44} />
-          <span className="font-display text-text-primary text-center" style={{ fontWeight: m.isMyTeam && m.myTeamSide === "home" ? 600 : 500, fontSize: 13, lineHeight: "16px" }}>
-            {m.home.name}
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center gap-1 min-w-[64px]">
-          <span
-            className="font-display"
-            style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: 22, fontVariantNumeric: "tabular-nums" }}
-          >
-            {m.time}
-          </span>
-          <span style={{ fontFamily: "var(--font-sans)", fontSize: 10, color: "var(--text-tertiary)", letterSpacing: "0.06em" }}>
-            VS
-          </span>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center gap-2">
-          <TeamLogo tone={m.away.tone} mono={m.away.mono} size={44} />
-          <span className="font-display text-text-primary text-center" style={{ fontWeight: m.isMyTeam && m.myTeamSide === "away" ? 600 : 500, fontSize: 13, lineHeight: "16px" }}>
-            {m.away.name}
-          </span>
-        </div>
-      </div>
-
-      {m.stadium && (
-        <div className="mt-3 text-center" style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          {m.stadium}
-        </div>
-      )}
-
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={m.isMyTeam ? onJoin : onGuest}
-          className="w-full rounded-pill flex items-center justify-center gap-1.5 transition-colors"
-          style={{
-            height: 40,
-            background: m.isMyTeam ? "var(--primary)" : "white",
-            border: m.isMyTeam ? "none" : "1px solid var(--border)",
-            color: m.isMyTeam ? "white" : "var(--text-secondary)",
-            fontFamily: "var(--font-sans)",
-            fontWeight: 500,
-            fontSize: 13,
-          }}
-        >
-          {m.isMyTeam ? "Tribün Hazır" : "Misafir olarak gir"}
-          {!m.isMyTeam && <IconChevron dir="right" size={14} />}
-        </button>
-      </div>
-    </article>
-  );
-}
-
-function PastRow({ m, expanded, onToggle }: { m: Match; expanded: boolean; onToggle: () => void }) {
-  const myWon =
-    m.isMyTeam &&
-    m.homeScore !== undefined &&
-    m.awayScore !== undefined &&
-    ((m.myTeamSide === "home" && m.homeScore > m.awayScore) ||
-      (m.myTeamSide === "away" && m.awayScore > m.homeScore));
-  const myDraw = m.isMyTeam && m.homeScore === m.awayScore;
-  const accent = myWon ? "var(--success-fg)" : myDraw ? "var(--text-tertiary)" : m.isMyTeam ? "var(--primary)" : "var(--border)";
-
-  return (
-    <div className="bg-surface rounded-2xl border overflow-hidden" style={{ borderColor: "var(--border-tertiary)" }}>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="w-full flex items-center gap-3 px-3 relative"
-        style={{ height: 64 }}
-      >
-        <span className="absolute left-0 top-3 bottom-3 rounded-pill" style={{ width: 2, background: accent, opacity: m.isMyTeam ? 1 : 0 }} />
-        <div className="flex items-center gap-1.5">
-          <TeamLogo tone={m.home.tone} mono={m.home.mono} size={24} />
-          <TeamLogo tone={m.away.tone} mono={m.away.mono} size={24} />
-        </div>
-        <div className="flex-1 text-left flex flex-col">
-          <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: 13, color: "var(--text-primary)" }}>
-            {m.home.mono} – {m.away.mono}
-          </span>
-          <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "var(--text-tertiary)" }}>
-            {m.date} · {m.league}
-          </span>
-        </div>
-        <span className="font-display" style={{ fontWeight: 600, fontSize: 18, color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}>
-          {m.homeScore}–{m.awayScore}
-        </span>
-        <span style={{ color: "var(--text-tertiary)", transform: expanded ? "rotate(180deg)" : "none", transition: "transform 200ms" }}>
-          <IconChevron dir="down" size={16} />
-        </span>
-      </button>
-
-      {expanded && (
-        <div className="px-4 pb-4 border-t" style={{ borderColor: "var(--border-tertiary)" }}>
-          <div className="pt-3 flex items-center justify-center gap-4">
-            <div className="flex flex-col items-center gap-1">
-              <TeamLogo tone={m.home.tone} mono={m.home.mono} size={36} />
-              <span className="font-display" style={{ fontWeight: 600, fontSize: 13 }}>{m.home.name}</span>
-            </div>
-            <span className="font-display" style={{ fontWeight: 600, fontSize: 32, fontVariantNumeric: "tabular-nums" }}>
-              {m.homeScore} – {m.awayScore}
-            </span>
-            <div className="flex flex-col items-center gap-1">
-              <TeamLogo tone={m.away.tone} mono={m.away.mono} size={36} />
-              <span className="font-display" style={{ fontWeight: 600, fontSize: 13 }}>{m.away.name}</span>
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-2">
-            {(m.events ?? []).map((e, i) => (
-              <div key={i} className="flex items-center gap-2.5">
-                <span
-                  className="font-display"
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 12,
-                    color: "var(--text-tertiary)",
-                    width: 32,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {e.minute}
-                </span>
-                <span style={{ color: e.type === "goal" ? "var(--text-primary)" : "transparent" }}>
-                  {e.type === "goal" ? <IconBall /> : null}
-                  {e.type === "yellow" ? <IconCard color="#F4C430" /> : null}
-                  {e.type === "red" ? <IconCard color="#A32D2D" /> : null}
-                </span>
-                <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--text-primary)" }}>
-                  {e.player}
-                </span>
-                <span className="ml-auto" style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "var(--text-tertiary)" }}>
-                  {e.team === "home" ? m.home.mono : m.away.mono}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {m.chatActive && (
+      <div className="mt-4 space-y-2">
+        {options.map((opt, i) => {
+          const voted = vote !== null;
+          const isMine = vote === i;
+          return (
             <button
-              type="button"
-              className="mt-4 w-full rounded-pill"
-              style={{
-                height: 40,
-                background: "var(--primary)",
-                color: "white",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 500,
-                fontSize: 13,
-              }}
+              key={opt.label}
+              onClick={() => vote === null && setVote(i)}
+              className="relative w-full overflow-hidden rounded-full bg-white text-left transition-transform active:scale-[0.99]"
+              style={{ padding: "12px 16px" }}
             >
-              Tribüne Git
+              {voted && (
+                <span
+                  className="absolute inset-y-0 left-0 transition-[width] duration-300 ease-out"
+                  style={{
+                    width: `${opt.pct}%`,
+                    background: isMine ? "rgba(124,3,25,0.18)" : "rgba(124,3,25,0.08)",
+                  }}
+                />
+              )}
+              <span className="relative flex items-center justify-between">
+                <span className="font-sans font-medium text-[14px]" style={{ color: "#7C0319" }}>
+                  {opt.label}
+                </span>
+                {voted && (
+                  <span className="font-display font-semibold text-[14px]" style={{ color: "#7C0319" }}>
+                    {opt.pct}%
+                  </span>
+                )}
+              </span>
             </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ───────── Modals ───────── */
-
-function GuestModal({ onClose, onConfirm, teamName }: { onClose: () => void; onConfirm: () => void; teamName: string }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: "rgba(20,16,10,0.55)" }}>
+          );
+        })}
+      </div>
       <div
-        className="bg-surface rounded-2xl w-full"
-        style={{ maxWidth: 320, padding: 24 }}
+        className="mt-3 font-sans text-[11px] italic"
+        style={{ color: "#7C0319", opacity: 0.7 }}
       >
-        <div className="flex justify-center" style={{ color: "var(--primary)" }}>
-          <IconEye />
-        </div>
-        <h3
-          className="mt-3 text-center font-display text-text-primary"
-          style={{ fontWeight: 600, fontSize: 20, letterSpacing: "-0.005em" }}
-        >
-          Misafir olarak gir
-        </h3>
-        <p
-          className="mt-2 text-center text-text-secondary"
-          style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 14, lineHeight: "20px" }}
-        >
-          {teamName} tribününe sadece izleyici olarak girebilirsin. Yorum yazamaz, oylama yapamazsın.
-        </p>
-        <div className="mt-6 flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="w-full rounded-pill"
-            style={{
-              height: 48,
-              background: "var(--primary)",
-              color: "white",
-              fontFamily: "var(--font-sans)",
-              fontWeight: 500,
-              fontSize: 15,
-            }}
-          >
-            Devam et
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full"
-            style={{
-              height: 40,
-              background: "transparent",
-              color: "var(--text-secondary)",
-              fontFamily: "var(--font-sans)",
-              fontWeight: 500,
-              fontSize: 14,
-            }}
-          >
-            İptal
-          </button>
-        </div>
+        Tribünün ne dediğini görmek için seçim yap
       </div>
     </div>
   );
 }
 
-function JoinedSheet({ onClose, match }: { onClose: () => void; match: Match }) {
+/* ───────── Goal banner ───────── */
+
+function GoalBanner() {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: "rgba(20,16,10,0.55)" }} onClick={onClose}>
-      <div
-        className="w-full max-w-[393px] bg-surface rounded-t-3xl"
-        style={{ padding: 20, paddingBottom: 32 }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between">
-          <span className="font-display" style={{ fontWeight: 600, fontSize: 16 }}>Tribüne giriliyor</span>
-          <button type="button" onClick={onClose} className="size-8 flex items-center justify-center text-text-secondary"><IconClose /></button>
-        </div>
-        <div className="mt-4 flex items-center justify-center gap-3">
-          <TeamLogo tone={match.home.tone} mono={match.home.mono} size={40} />
-          <span className="font-display" style={{ fontWeight: 600, fontSize: 14 }}>vs</span>
-          <TeamLogo tone={match.away.tone} mono={match.away.mono} size={40} />
-        </div>
-        <p className="mt-3 text-center" style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--text-secondary)" }}>
-          Aslan Tribünü hazır. Maç boyunca yorum yapabilirsin.
-        </p>
+    <div
+      className="mx-4 my-1 relative overflow-hidden rounded-2xl p-4 animate-[slideUp_0.3s_ease-out]"
+      style={{ background: "linear-gradient(110deg, #FDB912 0%, #E8A100 45%, #A90432 100%)" }}
+    >
+      {/* sparks */}
+      <div className="pointer-events-none absolute inset-0">
+        {[
+          [10, 30], [70, 18], [40, 70], [85, 60], [25, 80], [55, 35], [92, 25], [15, 55],
+        ].map(([x, y], i) => (
+          <span
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              width: i % 2 ? 3 : 2,
+              height: i % 2 ? 3 : 2,
+              opacity: 0.7,
+              boxShadow: "0 0 6px rgba(255,255,255,0.9)",
+            }}
+          />
+        ))}
+      </div>
+      <div className="relative font-display font-semibold text-[24px] leading-tight text-white" style={{ textShadow: "0 1px 2px rgba(124,3,25,0.5)" }}>
+        GOOOL! <span style={{ color: "#FFF8E0" }}>Icardi 67'</span>
+      </div>
+      <div className="relative mt-1 font-sans text-[12px] text-white/90">
+        Galatasaray 2 — 1 Fenerbahçe
       </div>
     </div>
   );
 }
 
-/* ───────── Data ───────── */
+/* ───────── Input bar ───────── */
 
-const TEAM_GS: Team = { name: "Galatasaray", mono: "GS", tone: "linear-gradient(135deg,#A90432,#7C0319)" };
-const TEAM_FB: Team = { name: "Fenerbahçe", mono: "FB", tone: "linear-gradient(135deg,#1B3D7A,#0E2453)" };
-const TEAM_BJK: Team = { name: "Beşiktaş", mono: "BJK", tone: "linear-gradient(135deg,#1A1A1A,#3a3a3a)" };
-const TEAM_TS: Team = { name: "Trabzonspor", mono: "TS", tone: "linear-gradient(135deg,#7A1F2F,#3F1118)" };
-const TEAM_BS: Team = { name: "Başakşehir", mono: "İBFK", tone: "linear-gradient(135deg,#243B6B,#142046)" };
-const TEAM_KS: Team = { name: "Kayserispor", mono: "KS", tone: "linear-gradient(135deg,#B89A2B,#7A6418)" };
-
-const LIVE: Match[] = [
-  {
-    id: "l1",
-    league: "Süper Lig",
-    home: TEAM_GS,
-    away: TEAM_TS,
-    homeScore: 2,
-    awayScore: 1,
-    minute: "67'",
-    isMyTeam: true,
-    myTeamSide: "home",
-  },
-  {
-    id: "l2",
-    league: "Süper Lig",
-    home: TEAM_FB,
-    away: TEAM_BJK,
-    homeScore: 0,
-    awayScore: 0,
-    minute: "23'",
-  },
-];
-
-const TODAY: Match[] = [
-  {
-    id: "t1",
-    league: "Türkiye Kupası",
-    home: TEAM_GS,
-    away: TEAM_KS,
-    time: "20:00",
-    stadium: "RAMS Park",
-    isMyTeam: true,
-    myTeamSide: "home",
-  },
-  {
-    id: "t2",
-    league: "Süper Lig",
-    home: TEAM_BS,
-    away: TEAM_BJK,
-    time: "17:30",
-    stadium: "Başakşehir Fatih Terim",
-  },
-];
-
-const PAST: Match[] = [
-  {
-    id: "p1",
-    league: "Süper Lig",
-    home: TEAM_GS,
-    away: TEAM_FB,
-    homeScore: 3,
-    awayScore: 1,
-    date: "20 Nis 2026",
-    isMyTeam: true,
-    myTeamSide: "home",
-    chatActive: true,
-    events: [
-      { minute: "12'", type: "goal", team: "home", player: "Icardi" },
-      { minute: "34'", type: "yellow", team: "away", player: "Tadić" },
-      { minute: "58'", type: "goal", team: "away", player: "Dzeko" },
-      { minute: "71'", type: "goal", team: "home", player: "Mertens" },
-      { minute: "84'", type: "goal", team: "home", player: "Sané" },
-    ],
-  },
-  {
-    id: "p2",
-    league: "Süper Lig",
-    home: TEAM_BJK,
-    away: TEAM_GS,
-    homeScore: 0,
-    awayScore: 2,
-    date: "13 Nis 2026",
-    isMyTeam: true,
-    myTeamSide: "away",
-    events: [
-      { minute: "22'", type: "goal", team: "away", player: "Mertens" },
-      { minute: "67'", type: "red", team: "home", player: "Mustafi" },
-      { minute: "78'", type: "goal", team: "away", player: "Icardi" },
-    ],
-  },
-  {
-    id: "p3",
-    league: "Süper Lig",
-    home: TEAM_TS,
-    away: TEAM_FB,
-    homeScore: 1,
-    awayScore: 1,
-    date: "8 Nis 2026",
-    events: [],
-  },
-];
+function InputBar() {
+  return (
+    <div
+      className="sticky bottom-0 z-20 flex items-center gap-[9px] px-4 py-3"
+      style={{ background: "linear-gradient(180deg, #F5E6CC 0%, #F0E0BD 100%)", height: 64, borderTop: "1px solid #D4C4A8" }}
+    >
+      <button
+        className="flex h-10 w-10 items-center justify-center rounded-full text-[#7C0319]"
+        style={{ background: "rgba(255,255,255,0.7)", border: "1px solid #D4C4A8" }}
+        aria-label="Emoji"
+      >
+        <IconSmile />
+      </button>
+      <input
+        className="h-10 flex-1 rounded-full bg-white px-4 font-sans text-[14px] text-[#1A1A1A] placeholder:text-[#999] outline-none focus:ring-2 focus:ring-[#A32D2D]/30"
+        placeholder="Tribünden seslen..."
+      />
+      <button
+        className="flex h-10 w-10 items-center justify-center rounded-full text-white shadow-md"
+        style={{ background: "linear-gradient(135deg, #C73838 0%, #A32D2D 100%)" }}
+        aria-label="Gönder"
+      >
+        <IconArrowUp />
+      </button>
+    </div>
+  );
+}
 
 /* ───────── Screen ───────── */
 
-const TABS = [
-  { key: "home", label: "Ana Sayfa", Icon: IconHome },
-  { key: "news", label: "Gündem", Icon: IconNews },
-  { key: "match", label: "Maç", Icon: IconMatch },
-  { key: "community", label: "Topluluk", Icon: IconCommunity },
-  { key: "profile", label: "Profil", Icon: IconProfile },
-] as const;
+function MatchLiveScreen() {
+  const [activeTab, setActiveTab] = useState("Sohbet");
+  const [scoreShake, setScoreShake] = useState(false);
+  const feedRef = useRef<HTMLDivElement>(null);
 
-const SEGMENTS = ["CANLI", "BUGÜN", "GEÇMİŞ"] as const;
-type Segment = (typeof SEGMENTS)[number];
-
-function MatchScreen() {
-  const [seg, setSeg] = useState<Segment>("CANLI");
-  const [expanded, setExpanded] = useState<string | null>("p1");
-  const [guest, setGuest] = useState<Match | null>(null);
-  const [joined, setJoined] = useState<Match | null>(null);
-  const [active] = useState<(typeof TABS)[number]["key"]>("match");
-
-  const onGuest = (m: Match) => setGuest(m);
-  const onJoin = (m: Match) => setJoined(m);
+  // brief shake when mounted (simulating goal celebration)
+  useEffect(() => {
+    const t = setTimeout(() => setScoreShake(true), 400);
+    const t2 = setTimeout(() => setScoreShake(false), 1200);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(t2);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary">
-      <div className="mx-auto w-full max-w-[393px] min-h-screen flex flex-col relative">
-        {/* App bar */}
-        <header
-          className="sticky top-0 z-30 bg-bg-primary flex items-center justify-between px-4"
-          style={{ height: 56 }}
-        >
-          <h1 className="font-display text-text-primary" style={{ fontWeight: 600, fontSize: 24, letterSpacing: "-0.01em" }}>
-            Maç
-          </h1>
-          <button type="button" aria-label="Takvim" className="size-10 flex items-center justify-center text-text-primary">
-            <IconCalendar />
-          </button>
-        </header>
+    <div className="theme-gs-home min-h-screen w-full" style={{ background: "#7C0319" }}>
+      {/* Phone frame container */}
+      <div
+        className="mx-auto flex flex-col"
+        style={{
+          width: 393,
+          minHeight: 852,
+          background: "#7C0319",
+          color: "white",
+          boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
+        }}
+      >
+        <MatchHeader scoreShake={scoreShake} />
+        <TribunSwitcher />
+        <TabBar active={activeTab} onChange={setActiveTab} />
 
-        {/* Segmented control */}
-        <div className="px-4 pt-2 pb-3 sticky top-14 z-20 bg-bg-primary">
-          <div
-            className="bg-surface rounded-pill border flex items-center"
-            style={{ borderColor: "var(--border-tertiary)", padding: 4, height: 44 }}
-          >
-            {SEGMENTS.map((s) => {
-              const isActive = seg === s;
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSeg(s)}
-                  className="flex-1 rounded-pill flex items-center justify-center gap-1.5 transition-all"
-                  style={{
-                    height: 36,
-                    background: isActive ? "var(--primary)" : "transparent",
-                    color: isActive ? "white" : "var(--text-secondary)",
-                    fontFamily: "var(--font-sans)",
-                    fontWeight: 500,
-                    fontSize: 13,
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {s === "CANLI" && <LiveDot size={6} />}
-                  {s}
-                </button>
-              );
-            })}
-          </div>
+        {/* Feed */}
+        <div ref={feedRef} className="flex-1 space-y-3 py-4" style={{ background: "#7C0319" }}>
+          <ChatMessage role="fan" username="emre_gs" text="Icardi bu maçta yine kralımız 👑" time="67'" />
+          <ChatMessage
+            role="yazar"
+            username="Hıncal Uluç"
+            text="Mertens'in pas yüzdesi %94. Bu adamın yaşına bakmayın, beyni hâlâ Napoli'de attığı goller gibi keskin."
+            time="66'"
+          />
+          <ChatMessage role="fan" username="cimbom_1905" text="HAKEM NEYE BAKIYOR YA, FAUL APAÇIK!" time="65'" />
+          <PollCard />
+          <ChatMessage
+            role="fenomen"
+            username="ultrAslan_Cem"
+            text="Tribün ayakta. Bu atmosfer ekrana sığmaz. Buradan selamlar 🟡🔴"
+            time="64'"
+          />
+          <GoalBanner />
+          <ChatMessage
+            role="efsane"
+            username="Hagi"
+            text="Bu takım kalbiyle oynuyor. Devre arasında baskıyı sürdürmeleri lazım, Fener kenarda toparlanır."
+            time="63'"
+          />
+          <ChatMessage role="fan" username="aslan_yürekli" text="Mauro nereye atarsa atsın gol oluyor be 🔥" time="62'" />
+          <ChatMessage
+            role="yazar"
+            username="Uğur Meleke"
+            text="Galatasaray'ın ikinci yarıdaki press temposu, 30 yıllık derbi tarihinde gördüğüm en agresif on dakikalardan biri."
+            time="61'"
+          />
+          <ChatMessage role="fan" username="kerimm" text="Hadi bir gol daha, bitirelim bu işi! 🦁" time="60'" />
+          <div className="h-2" />
         </div>
 
-        {/* Content */}
-        <main className="flex-1 pb-28 px-4 flex flex-col gap-4">
-          {seg === "CANLI" && (
-            <>
-              <SectionHeader title="Şu an oynanıyor" />
-              <div className="flex flex-col gap-3">
-                {LIVE.map((m) => (
-                  <LiveCard key={m.id} m={m} onJoin={() => onJoin(m)} onGuest={() => onGuest(m)} />
-                ))}
-              </div>
-              <SectionHeader title="Bugün" />
-              <div className="flex flex-col gap-3">
-                {TODAY.map((m) => (
-                  <TodayCard key={m.id} m={m} onJoin={() => onJoin(m)} onGuest={() => onGuest(m)} />
-                ))}
-              </div>
-            </>
-          )}
-
-          {seg === "BUGÜN" && (
-            <>
-              <SectionHeader title="Bugünün maçları" />
-              <div className="flex flex-col gap-3">
-                {TODAY.map((m) => (
-                  <TodayCard key={m.id} m={m} onJoin={() => onJoin(m)} onGuest={() => onGuest(m)} />
-                ))}
-              </div>
-            </>
-          )}
-
-          {seg === "GEÇMİŞ" && (
-            <>
-              <SectionHeader title="Geçmiş" />
-              <div className="flex flex-col gap-2">
-                {PAST.map((m) => (
-                  <PastRow
-                    key={m.id}
-                    m={m}
-                    expanded={expanded === m.id}
-                    onToggle={() => setExpanded(expanded === m.id ? null : m.id)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </main>
-
-        {/* Bottom tab bar */}
-        <nav
-          className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-surface border-t flex items-stretch"
-          style={{ height: 80, borderColor: "var(--border-tertiary)", paddingBottom: 12 }}
-        >
-          {TABS.map((t) => {
-            const isActive = active === t.key;
-            const Icon = t.Icon;
-            return (
-              <button
-                key={t.key}
-                type="button"
-                className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors"
-                style={{ color: isActive ? "var(--primary)" : "var(--text-tertiary)" }}
-              >
-                <Icon filled={isActive} />
-                <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.02em" }}>
-                  {t.label}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {guest && (
-          <GuestModal
-            teamName={guest.home.name === MY_TEAM ? guest.away.name : guest.home.name + " – " + guest.away.name}
-            onClose={() => setGuest(null)}
-            onConfirm={() => setGuest(null)}
-          />
-        )}
-        {joined && <JoinedSheet match={joined} onClose={() => setJoined(null)} />}
+        <InputBar />
       </div>
+
+      {/* Local keyframes */}
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0) scale(1); }
+          20% { transform: translateX(-3px) scale(1.05); }
+          40% { transform: translateX(3px) scale(1.05); }
+          60% { transform: translateX(-2px) scale(1.04); }
+          80% { transform: translateX(2px) scale(1.02); }
+        }
+      `}</style>
     </div>
   );
 }
-
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <div className="pt-2">
-      <h2 className="font-display text-text-primary" style={{ fontWeight: 600, fontSize: 18, letterSpacing: "-0.005em" }}>
-        {title}
-      </h2>
-    </div>
-  );
-}
-
-function _unused(_: ReactNode) {}
