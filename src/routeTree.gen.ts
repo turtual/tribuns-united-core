@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ToplulukRouteImport } from './routes/topluluk'
+import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MacRouteImport } from './routes/mac'
 import { Route as KycRouteImport } from './routes/kyc'
@@ -16,6 +18,16 @@ import { Route as GundemRouteImport } from './routes/gundem'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MacCanliRouteImport } from './routes/mac.canli'
 
+const ToplulukRoute = ToplulukRouteImport.update({
+  id: '/topluluk',
+  path: '/topluluk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/kyc': typeof KycRoute
   '/mac': typeof MacRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/profil': typeof ProfilRoute
+  '/topluluk': typeof ToplulukRoute
   '/mac/canli': typeof MacCanliRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +75,8 @@ export interface FileRoutesByTo {
   '/kyc': typeof KycRoute
   '/mac': typeof MacRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/profil': typeof ProfilRoute
+  '/topluluk': typeof ToplulukRoute
   '/mac/canli': typeof MacCanliRoute
 }
 export interface FileRoutesById {
@@ -70,13 +86,31 @@ export interface FileRoutesById {
   '/kyc': typeof KycRoute
   '/mac': typeof MacRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/profil': typeof ProfilRoute
+  '/topluluk': typeof ToplulukRoute
   '/mac/canli': typeof MacCanliRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding' | '/mac/canli'
+  fullPaths:
+    | '/'
+    | '/gundem'
+    | '/kyc'
+    | '/mac'
+    | '/onboarding'
+    | '/profil'
+    | '/topluluk'
+    | '/mac/canli'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding' | '/mac/canli'
+  to:
+    | '/'
+    | '/gundem'
+    | '/kyc'
+    | '/mac'
+    | '/onboarding'
+    | '/profil'
+    | '/topluluk'
+    | '/mac/canli'
   id:
     | '__root__'
     | '/'
@@ -84,6 +118,8 @@ export interface FileRouteTypes {
     | '/kyc'
     | '/mac'
     | '/onboarding'
+    | '/profil'
+    | '/topluluk'
     | '/mac/canli'
   fileRoutesById: FileRoutesById
 }
@@ -93,10 +129,26 @@ export interface RootRouteChildren {
   KycRoute: typeof KycRoute
   MacRoute: typeof MacRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
+  ProfilRoute: typeof ProfilRoute
+  ToplulukRoute: typeof ToplulukRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/topluluk': {
+      id: '/topluluk'
+      path: '/topluluk'
+      fullPath: '/topluluk'
+      preLoaderRoute: typeof ToplulukRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -158,7 +210,18 @@ const rootRouteChildren: RootRouteChildren = {
   KycRoute: KycRoute,
   MacRoute: MacRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
+  ProfilRoute: ProfilRoute,
+  ToplulukRoute: ToplulukRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
