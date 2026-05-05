@@ -10,42 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as KayitRouteImport } from './routes/kayit'
-import { Route as IndexRouteImport } from './routes/index'
 
 const KayitRoute = KayitRouteImport.update({
   id: '/kayit',
   path: '/kayit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/kayit': typeof KayitRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/kayit': typeof KayitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/kayit': typeof KayitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/kayit'
+  fullPaths: '/kayit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kayit'
-  id: '__root__' | '/' | '/kayit'
+  to: '/kayit'
+  id: '__root__' | '/kayit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   KayitRoute: typeof KayitRoute
 }
 
@@ -58,18 +48,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KayitRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   KayitRoute: KayitRoute,
 }
 export const routeTree = rootRouteImport
