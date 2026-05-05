@@ -10,32 +10,42 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DogrulamaRouteImport } from './routes/dogrulama'
+import { Route as IndexRouteImport } from './routes/index'
 
 const DogrulamaRoute = DogrulamaRouteImport.update({
   id: '/dogrulama',
   path: '/dogrulama',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/dogrulama': typeof DogrulamaRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/dogrulama': typeof DogrulamaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/dogrulama': typeof DogrulamaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/dogrulama'
+  fullPaths: '/' | '/dogrulama'
   fileRoutesByTo: FileRoutesByTo
-  to: '/dogrulama'
-  id: '__root__' | '/dogrulama'
+  to: '/' | '/dogrulama'
+  id: '__root__' | '/' | '/dogrulama'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   DogrulamaRoute: typeof DogrulamaRoute
 }
 
@@ -48,10 +58,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DogrulamaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   DogrulamaRoute: DogrulamaRoute,
 }
 export const routeTree = rootRouteImport
