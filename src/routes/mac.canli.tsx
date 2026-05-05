@@ -109,6 +109,8 @@ function LiveMatchScreen() {
           </div>
           <MessageBubble theme="team_home" status="eski_futbolcu" username="Hagi" text="Bu takım kalbiyle oynuyor. Devre arasında baskıyı sürdürmeleri lazım." timestamp="63'" />
           <MessageBubble theme="team_home" username="aslan_yürekli" text="Mauro nereye atarsa atsın gol oluyor be 🔥" timestamp="62'" />
+          <MessageBubble theme="team_home" username="florya_çocuğu" text="Zaha sol kanadı yedi bitirdi 🦁" timestamp="61'" />
+          <MessageBubble theme="team_home" username="rams_park_67" text="Bu tribünün sesi İstanbul'u titretiyor 🔊" timestamp="60'" isOwn />
           <div className="h-2" />
         </div>
 
