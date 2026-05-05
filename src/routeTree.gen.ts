@@ -14,6 +14,7 @@ import { Route as MacRouteImport } from './routes/mac'
 import { Route as KycRouteImport } from './routes/kyc'
 import { Route as GundemRouteImport } from './routes/gundem'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MacCanliRouteImport } from './routes/mac.canli'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -40,42 +41,57 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MacCanliRoute = MacCanliRouteImport.update({
+  id: '/canli',
+  path: '/canli',
+  getParentRoute: () => MacRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
-  '/mac': typeof MacRoute
+  '/mac': typeof MacRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/mac/canli': typeof MacCanliRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
-  '/mac': typeof MacRoute
+  '/mac': typeof MacRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/mac/canli': typeof MacCanliRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
-  '/mac': typeof MacRoute
+  '/mac': typeof MacRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/mac/canli': typeof MacCanliRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding'
+  fullPaths: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding' | '/mac/canli'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding'
-  id: '__root__' | '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding'
+  to: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding' | '/mac/canli'
+  id:
+    | '__root__'
+    | '/'
+    | '/gundem'
+    | '/kyc'
+    | '/mac'
+    | '/onboarding'
+    | '/mac/canli'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GundemRoute: typeof GundemRoute
   KycRoute: typeof KycRoute
-  MacRoute: typeof MacRoute
+  MacRoute: typeof MacRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
 }
 
@@ -116,14 +132,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mac/canli': {
+      id: '/mac/canli'
+      path: '/canli'
+      fullPath: '/mac/canli'
+      preLoaderRoute: typeof MacCanliRouteImport
+      parentRoute: typeof MacRoute
+    }
   }
 }
+
+interface MacRouteChildren {
+  MacCanliRoute: typeof MacCanliRoute
+}
+
+const MacRouteChildren: MacRouteChildren = {
+  MacCanliRoute: MacCanliRoute,
+}
+
+const MacRouteWithChildren = MacRoute._addFileChildren(MacRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GundemRoute: GundemRoute,
   KycRoute: KycRoute,
-  MacRoute: MacRoute,
+  MacRoute: MacRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
 }
 export const routeTree = rootRouteImport
