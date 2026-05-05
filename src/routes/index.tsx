@@ -2,170 +2,164 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: KayitScreen,
 });
 
-type ThemeKey = "default" | "gs-home" | "gs-away";
+type Team = {
+  id: string;
+  name: string;
+  base: string;
+  stripe: string;
+  text: string;
+};
 
-function Index() {
-  const [theme, setTheme] = useState<ThemeKey>("default");
-  const themeClass =
-    theme === "gs-home" ? "theme-gs-home" : theme === "gs-away" ? "theme-gs-away" : "";
+const TEAMS: Team[] = [
+  { id: "gs", name: "Galatasaray", base: "#A90432", stripe: "#FDB912", text: "GS" },
+  { id: "fb", name: "Fenerbahçe", base: "#0A2240", stripe: "#FFED00", text: "FB" },
+  { id: "bjk", name: "Beşiktaş", base: "#1A1A1A", stripe: "#FFFFFF", text: "BJK" },
+  { id: "ts", name: "Trabzonspor", base: "#7A0E1F", stripe: "#0A2240", text: "TS" },
+];
+
+function TeamCrest({ team }: { team: Team }) {
+  return (
+    <div
+      className="size-12 rounded-pill flex items-center justify-center overflow-hidden relative"
+      style={{ backgroundColor: team.base }}
+    >
+      <div
+        className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-2.5"
+        style={{ backgroundColor: team.stripe, opacity: 0.85 }}
+      />
+      <span
+        className="relative font-display"
+        style={{ color: team.stripe, fontWeight: 600, fontSize: 11, letterSpacing: 0.4 }}
+      >
+        {team.text}
+      </span>
+    </div>
+  );
+}
+
+function KayitScreen() {
+  const [phone, setPhone] = useState("");
+  const [teamId, setTeamId] = useState<string | null>("gs");
 
   return (
-    <div className={`${themeClass} min-h-screen bg-bg-primary text-text-primary`}>
-      <div className="mx-auto w-full max-w-[393px] px-5 pt-12 pb-16">
-        {/* Wordmark */}
-        <div className="flex items-center justify-between">
-          <span className="t-h1 text-primary tracking-tight">TRİBÜN</span>
-          <span className="t-tiny uppercase text-text-tertiary">Design system</span>
-        </div>
+    <div className="min-h-screen bg-bg-primary text-text-primary">
+      <div className="mx-auto w-full max-w-[393px] min-h-screen flex flex-col px-6 pt-16 pb-10">
+        <header className="flex flex-col items-center text-center">
+          <h1
+            className="font-display text-primary"
+            style={{ fontWeight: 600, fontSize: 48, lineHeight: "56px", letterSpacing: "-0.02em" }}
+          >
+            TRİBÜN
+          </h1>
+          <p
+            className="mt-3 text-text-secondary"
+            style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 16, lineHeight: "24px" }}
+          >
+            Takımının tribününe katıl
+          </p>
+        </header>
 
-        <p className="t-body-sm mt-3 text-text-secondary">
-          Tek takım. Tek tribün. Editoryal ses.
-        </p>
+        <section className="mt-10 flex-1">
+          <div
+            className="flex items-center gap-3 bg-surface rounded-pill border"
+            style={{ borderColor: "var(--border)", height: 56, paddingLeft: 16, paddingRight: 16 }}
+          >
+            <span className="flex items-center gap-1.5 text-text-primary" style={{ fontSize: 16 }}>
+              <span style={{ fontSize: 20, lineHeight: 1 }}>🇹🇷</span>
+              <span style={{ fontWeight: 500 }}>+90</span>
+            </span>
+            <span className="h-6 w-px bg-border" />
+            <input
+              inputMode="numeric"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="5XX XXX XX XX"
+              className="flex-1 bg-transparent outline-none text-text-primary placeholder:text-text-tertiary"
+              style={{ fontFamily: "var(--font-sans)", fontSize: 16, letterSpacing: "0.02em" }}
+            />
+          </div>
 
-        {/* Theme switcher */}
-        <div className="mt-6 flex gap-2">
-          {(
-            [
-              { k: "default", l: "Varsayılan" },
-              { k: "gs-home", l: "GS İç Saha" },
-              { k: "gs-away", l: "GS Deplasman" },
-            ] as { k: ThemeKey; l: string }[]
-          ).map((t) => {
-            const active = theme === t.k;
-            return (
+          <div className="mt-7">
+            <label
+              className="block text-text-primary"
+              style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: 14, lineHeight: "20px" }}
+            >
+              Takımını seç
+            </label>
+
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              {TEAMS.map((team) => {
+                const selected = teamId === team.id;
+                return (
+                  <button
+                    key={team.id}
+                    type="button"
+                    onClick={() => setTeamId(team.id)}
+                    className="bg-surface rounded-xl flex flex-col items-center justify-center gap-2 transition-all duration-200"
+                    style={{
+                      width: "100%",
+                      height: 100,
+                      borderWidth: selected ? 2 : 1,
+                      borderStyle: "solid",
+                      borderColor: selected ? "var(--primary)" : "var(--border)",
+                      transform: selected ? "scale(1.02)" : "scale(1)",
+                      boxShadow: selected
+                        ? "0 4px 16px -8px color-mix(in oklab, var(--primary) 40%, transparent)"
+                        : "none",
+                    }}
+                  >
+                    <TeamCrest team={team} />
+                    <span
+                      className="font-display text-text-primary"
+                      style={{ fontWeight: 600, fontSize: 16, lineHeight: "20px" }}
+                    >
+                      {team.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 flex justify-center">
               <button
-                key={t.k}
-                onClick={() => setTheme(t.k)}
-                className={`t-caption rounded-pill px-3 py-1.5 border transition-colors ${
-                  active
-                    ? "bg-primary text-text-on-primary border-primary"
-                    : "bg-surface text-text-secondary border-border hover:border-primary"
-                }`}
+                type="button"
+                className="text-text-secondary underline underline-offset-4 decoration-border hover:decoration-text-secondary"
+                style={{ fontFamily: "var(--font-sans)", fontSize: 13, lineHeight: "18px" }}
               >
-                {t.l}
+                Diğer takımlar
               </button>
-            );
-          })}
-        </div>
-
-        {/* Color swatches */}
-        <section className="mt-8">
-          <h2 className="t-h2">Renkler</h2>
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {[
-              { c: "bg-primary", l: "Primary" },
-              { c: "bg-accent", l: "Accent" },
-              { c: "bg-bg-secondary", l: "BG 2" },
-              { c: "bg-bg-tertiary", l: "BG 3" },
-              { c: "bg-success", l: "Success" },
-              { c: "bg-info", l: "Info" },
-              { c: "bg-warning", l: "Warning" },
-              { c: "bg-surface border border-border", l: "Surface" },
-            ].map((s) => (
-              <div key={s.l} className="flex flex-col items-center gap-1.5">
-                <div className={`h-12 w-full rounded-lg ${s.c}`} />
-                <span className="t-tiny text-text-secondary uppercase">{s.l}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Typography */}
-        <section className="mt-8 rounded-xl bg-surface p-5 border border-border-tertiary">
-          <span className="t-tiny uppercase text-text-tertiary">Tipografi</span>
-          <div className="mt-2 space-y-2">
-            <p className="t-display text-primary">TRİBÜN</p>
-            <p className="t-h1">Derbi haftası geldi</p>
-            <p className="t-h2">Maç önü analiz</p>
-            <p className="t-h3">Kadro tahmini</p>
-            <p className="t-body-lg text-text-primary">
-              Tek takım odaklı, sakin ve editoryal bir ses.
-            </p>
-            <p className="t-body text-text-secondary">
-              Inter Regular ile gövde metni — okunabilir ve nötr.
-            </p>
-            <p className="t-caption uppercase text-text-tertiary">Caption · 12 / 500</p>
-          </div>
-        </section>
-
-        {/* Status badges */}
-        <section className="mt-8">
-          <h2 className="t-h2">Statü rozetleri</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {[
-              { l: "Spor Yazarı", v: "var(--badge-yazar)" },
-              { l: "Fenomen", v: "var(--badge-fenomen)" },
-              { l: "Eski Futbolcu", v: "var(--badge-futbolcu)" },
-              { l: "Kongre", v: "var(--badge-kongre)" },
-              { l: "Kombine", v: "var(--badge-kombine)" },
-            ].map((b) => (
-              <span
-                key={b.l}
-                className="t-caption rounded-pill px-2.5 py-1 text-white"
-                style={{ backgroundColor: b.v }}
-              >
-                {b.l}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* Buttons */}
-        <section className="mt-8">
-          <h2 className="t-h2">Butonlar</h2>
-          <div className="mt-3 flex flex-col gap-2.5">
-            <button className="t-h3 rounded-pill bg-primary text-text-on-primary py-3 hover:bg-primary-hover transition-colors">
-              Destekle
-            </button>
-            <button className="t-h3 rounded-pill bg-accent text-accent-foreground py-3 hover:bg-accent-hover transition-colors">
-              Oy ver
-            </button>
-            <button className="t-h3 rounded-pill bg-surface text-text-primary border border-border py-3 hover:border-primary transition-colors">
-              Takip et
-            </button>
-          </div>
-        </section>
-
-        {/* Sample card */}
-        <section className="mt-8">
-          <h2 className="t-h2">Kart örneği</h2>
-          <article className="mt-3 rounded-xl bg-surface border border-border-tertiary overflow-hidden">
-            <div className="px-4 pt-4 flex items-center gap-2">
-              <div className="size-8 rounded-pill bg-bg-tertiary" />
-              <div className="flex flex-col">
-                <span className="t-caption text-text-primary">Tribün Editör</span>
-                <span className="t-tiny uppercase text-text-tertiary">2 saat önce</span>
-              </div>
-              <span
-                className="ml-auto t-tiny rounded-pill px-2 py-0.5 text-white"
-                style={{ backgroundColor: "var(--badge-yazar)" }}
-              >
-                Spor Yazarı
-              </span>
             </div>
-            <div className="px-4 py-3">
-              <h3 className="t-h3 text-text-primary">
-                Antrenmanda taktik provası: sol kanatta yeni varyasyon
-              </h3>
-              <p className="t-body mt-1.5 text-text-secondary">
-                Teknik ekibin denediği üçlü rotasyon, derbi öncesi ipucu olabilir.
-              </p>
-            </div>
-            <div className="px-4 pb-4 flex items-center justify-between">
-              <button className="t-caption rounded-pill bg-bg-secondary text-text-primary px-3 py-1.5 border border-border">
-                ♥ Destekle · 1.2K
-              </button>
-              <span className="t-tiny uppercase text-text-tertiary">Gündem</span>
-            </div>
-          </article>
+          </div>
         </section>
 
-        <p className="mt-10 t-tiny uppercase text-text-tertiary text-center">
-          Hazır — ilk ekranı bekliyorum
-        </p>
+        <footer className="mt-8">
+          <button
+            type="button"
+            className="w-full rounded-pill bg-primary text-text-on-primary hover:bg-primary-hover transition-colors"
+            style={{
+              height: 56,
+              fontFamily: "var(--font-sans)",
+              fontWeight: 500,
+              fontSize: 16,
+              letterSpacing: "0.01em",
+            }}
+          >
+            Devam et
+          </button>
+          <p
+            className="mt-4 text-center text-text-tertiary"
+            style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12, lineHeight: "16px" }}
+          >
+            Devam ederek{" "}
+            <span className="underline underline-offset-2 decoration-text-tertiary">
+              Kullanım Koşulları
+            </span>
+            ’nı kabul ediyorsun
+          </p>
+        </footer>
       </div>
     </div>
   );
