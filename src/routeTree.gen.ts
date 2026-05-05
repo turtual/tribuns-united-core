@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MacRouteImport } from './routes/mac'
 import { Route as KycRouteImport } from './routes/kyc'
 import { Route as GundemRouteImport } from './routes/gundem'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MacRoute = MacRouteImport.update({
+  id: '/mac',
+  path: '/mac',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KycRoute = KycRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
+  '/mac': typeof MacRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
+  '/mac': typeof MacRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
+  '/mac': typeof MacRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gundem' | '/kyc' | '/onboarding'
+  fullPaths: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gundem' | '/kyc' | '/onboarding'
-  id: '__root__' | '/' | '/gundem' | '/kyc' | '/onboarding'
+  to: '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding'
+  id: '__root__' | '/' | '/gundem' | '/kyc' | '/mac' | '/onboarding'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GundemRoute: typeof GundemRoute
   KycRoute: typeof KycRoute
+  MacRoute: typeof MacRoute
   OnboardingRoute: typeof OnboardingRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mac': {
+      id: '/mac'
+      path: '/mac'
+      fullPath: '/mac'
+      preLoaderRoute: typeof MacRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kyc': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GundemRoute: GundemRoute,
   KycRoute: KycRoute,
+  MacRoute: MacRoute,
   OnboardingRoute: OnboardingRoute,
 }
 export const routeTree = rootRouteImport
