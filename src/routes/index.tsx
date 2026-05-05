@@ -1,40 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import {
+  Settings,
+  Bell,
+  MessageCircle,
+  Trophy,
+  Shirt,
+  ChevronRight,
+  CalendarCheck,
+  ClipboardList,
+  Plus,
+  Palette,
+  Crown,
+  HelpCircle,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
-  component: CommunityScreen,
+  component: ProfileScreen,
 });
-
-/* ───────── Icons ───────── */
-
-function IconPlus({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-      <path d="M12 5 V19 M5 12 H19" />
-    </svg>
-  );
-}
-function IconCheck({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12 L10 17 L19 7" />
-    </svg>
-  );
-}
-function IconShare() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3 V15 M7 8 L12 3 L17 8" />
-      <path d="M5 14 V19 C5 20 5.5 20.5 6.5 20.5 H17.5 C18.5 20.5 19 20 19 19 V14" />
-    </svg>
-  );
-}
 
 /* ───────── Status bar ───────── */
 
 function StatusBar() {
   return (
-    <div className="flex items-center justify-between px-6 pt-2 pb-1 text-text-primary" style={{ height: 44 }}>
+    <div className="flex items-center justify-between px-6 pt-2 pb-1 text-white" style={{ height: 44 }}>
       <span className="text-[15px] font-semibold tracking-tight">21:47</span>
       <div className="flex items-center gap-1.5">
         <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="6" rx="0.5"/><rect x="9" y="2.5" width="3" height="8.5" rx="0.5"/><rect x="13.5" y="0" width="3" height="11" rx="0.5"/></svg>
@@ -45,306 +33,351 @@ function StatusBar() {
   );
 }
 
-/* ───────── Avatar ───────── */
+/* ───────── Team logo / Avatar placeholders ───────── */
 
-function Avatar({ size = 24 }: { size?: number }) {
+function TeamLogo({ team, size = 24 }: { team: "GS" | "FB" | "BJK" | "TS"; size?: number }) {
+  const map = {
+    GS: "linear-gradient(135deg, #FDB912 0%, #A90432 100%)",
+    FB: "linear-gradient(135deg, #FFE600 0%, #00296B 100%)",
+    BJK: "linear-gradient(135deg, #FFFFFF 0%, #1A1A1A 100%)",
+    TS: "linear-gradient(135deg, #8B0000 0%, #003F87 100%)",
+  };
+  const initials = team;
   return (
     <div
-      className="shrink-0 rounded-full"
+      className="flex items-center justify-center rounded-full font-display font-semibold text-white"
+      style={{
+        width: size,
+        height: size,
+        background: map[team],
+        fontSize: size * 0.36,
+        letterSpacing: "0.02em",
+      }}
+    >
+      {initials}
+    </div>
+  );
+}
+
+function FriendAvatar({ size = 60, teamColor }: { size?: number; teamColor: string }) {
+  return (
+    <div
+      className="rounded-full"
       style={{
         width: size,
         height: size,
         background: "linear-gradient(135deg, #E0D5BC, #C9B998)",
-        border: "1px solid var(--color-border)",
+        border: `2px solid ${teamColor}`,
       }}
     />
   );
 }
 
-/* ───────── Pills ───────── */
+/* ───────── Hero ───────── */
 
-function StatusPill({ kind }: { kind: "fenomen" | "yazar" | "efsane" | "kongre" }) {
-  const map = {
-    fenomen: { label: "FENOMEN", bg: "#FFB700", color: "#1A1A1A" },
-    yazar: { label: "SPOR YAZARI", bg: "#185FA5", color: "#ffffff" },
-    efsane: { label: "EFSANE", bg: "#A32D2D", color: "#ffffff" },
-    kongre: { label: "KONGRE", bg: "#6B2D8F", color: "#ffffff" },
-  }[kind];
+function Hero() {
   return (
-    <span
-      className="inline-block rounded-full px-1.5 py-0.5 font-sans font-semibold uppercase"
-      style={{ background: map.bg, color: map.color, fontSize: 9, letterSpacing: "0.08em", lineHeight: 1.2 }}
-    >
-      {map.label}
-    </span>
-  );
-}
-
-function StatePill({ kind }: { kind: "open" | "featured" | "won" | "closed" }) {
-  const map = {
-    open: { label: "AÇIK", bg: "var(--color-success-bg)", color: "var(--color-success)" },
-    featured: { label: "ÖNE ÇIKTI", bg: "#FFB700", color: "#1A1A1A" },
-    won: { label: "BAŞARILI", bg: "var(--color-success-bg)", color: "var(--color-success)" },
-    closed: { label: "KAPANDI", bg: "#E8DBC4", color: "#666" },
-  }[kind];
-  return (
-    <span
-      className="inline-flex items-center rounded-full px-2 py-1 font-sans font-semibold uppercase"
-      style={{ background: map.bg, color: map.color, fontSize: 10, letterSpacing: "0.08em", lineHeight: 1 }}
-    >
-      {map.label}
-    </span>
-  );
-}
-
-/* ───────── Hero card ───────── */
-
-function HeroCard() {
-  return (
-    <div
-      className="relative overflow-hidden rounded-2xl p-5 text-white"
-      style={{ background: "linear-gradient(135deg, #A32D2D 0%, #7C0319 100%)", minHeight: 120 }}
-    >
-      {/* subtle decoration */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-6 -top-6 font-display font-semibold opacity-10"
-        style={{ fontSize: 120, color: "#FFB700", lineHeight: 1 }}
-      >
-        #
-      </span>
-      <div className="relative">
-        <div className="font-display font-semibold text-[20px] leading-tight">Tribünün Sesi Ol</div>
-        <p className="mt-2 max-w-[260px] font-sans text-[13px] leading-[18px] text-white/80">
-          Sözünü ettiğin hashtag'i tribün ne kadar destekliyor? Oyla, gündeme taşı.
-        </p>
-        <button
-          className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-sans font-medium text-[14px] transition-transform active:scale-95"
-          style={{ color: "#A32D2D" }}
-        >
-          <IconPlus size={14} />
-          Hashtag aç
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ───────── Hashtag card ───────── */
-
-interface HashtagCardProps {
-  proposer: { name: string; role: "fenomen" | "yazar" | "efsane" | "kongre" };
-  tag: string;
-  description: string;
-  votes: number;
-  goal: number;
-  daysLeft: number;
-  state: "open" | "featured";
-  initiallySupported?: boolean;
-}
-
-function HashtagCard({ proposer, tag, description, votes, goal, daysLeft, state, initiallySupported }: HashtagCardProps) {
-  const [supported, setSupported] = useState(!!initiallySupported);
-  const total = supported && !initiallySupported ? votes + 1 : votes;
-  const pct = Math.min(100, Math.round((total / goal) * 100));
-  const isFeatured = state === "featured";
-
-  return (
-    <div
-      className="relative overflow-hidden rounded-2xl bg-surface p-5"
+    <header
+      className="relative px-6 pb-8 pt-2 text-center"
       style={{
-        border: isFeatured ? "2px solid #FFB700" : "1px solid var(--color-border-tertiary)",
-        boxShadow: isFeatured ? "0 8px 24px -12px rgba(255,183,0,0.4)" : "0 1px 2px rgba(0,0,0,0.03)",
+        background: "linear-gradient(180deg, #A90432 0%, #7C0319 35%, rgba(250,238,218,0) 100%)",
       }}
     >
-      {isFeatured && (
-        <>
-          {/* Corner ribbon */}
-          <span
-            aria-hidden
-            className="absolute -left-px -top-px h-12 w-12"
-            style={{
-              background: "linear-gradient(135deg, #FFB700 0%, #FFB700 50%, transparent 50%)",
-            }}
-          />
-          <span
-            className="absolute left-1 top-1 font-display font-semibold uppercase"
-            style={{ fontSize: 9, color: "#1A1A1A", letterSpacing: "0.1em", transform: "rotate(-45deg) translate(-4px, 6px)", transformOrigin: "left top" }}
-          >
-            ★
-          </span>
-        </>
-      )}
+      <StatusBar />
 
-      {/* Top row */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2 min-w-0">
-          <Avatar />
-          <span className="truncate font-sans font-medium text-[13px] text-text-primary">{proposer.name}</span>
-          <StatusPill kind={proposer.role} />
-        </div>
-        <StatePill kind={state} />
+      {/* Top bar */}
+      <div className="-mx-2 mb-4 flex items-center justify-between">
+        <div className="w-9" />
+        <h1 className="font-display font-semibold text-[20px] text-white">Profil</h1>
+        <button
+          className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10"
+          aria-label="Ayarlar"
+        >
+          <Settings size={22} />
+        </button>
       </div>
 
-      {/* Hashtag */}
-      <div className="mt-3 font-display font-semibold leading-[1.05] break-words" style={{ fontSize: 28, color: "#A32D2D" }}>
-        {tag}
-      </div>
-
-      {/* Description */}
-      <p className="mt-2 font-sans text-[14px] leading-[20px] text-text-secondary">{description}</p>
-
-      {/* Progress bar */}
-      <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full" style={{ background: "var(--color-bg-secondary)" }}>
+      {/* Avatar */}
+      <div className="mx-auto" style={{ width: 96, height: 96 }}>
         <div
-          className="h-full rounded-full transition-[width] duration-500 ease-out"
+          className="h-full w-full rounded-full"
           style={{
-            width: `${pct}%`,
-            background: isFeatured
-              ? "linear-gradient(90deg, #A32D2D 0%, #FFB700 100%)"
-              : "#A32D2D",
+            background: "linear-gradient(135deg, #E0D5BC, #C9B998)",
+            border: "4px solid white",
+            boxShadow: "0 8px 24px -8px rgba(0,0,0,0.35)",
           }}
         />
       </div>
 
-      {/* Stats */}
-      <div className="mt-2 flex items-center justify-between">
-        <span className="font-sans font-medium text-[12px] text-text-primary">
-          {total.toLocaleString("tr-TR")} <span className="text-text-tertiary">/ {goal.toLocaleString("tr-TR")} oy</span>
+      {/* Name */}
+      <div className="mt-3 font-display font-semibold text-[24px] leading-tight text-white">
+        Ali Salihoğlu
+      </div>
+      <div className="mt-0.5 font-sans text-[14px] text-white/80">@alisa</div>
+
+      {/* Status */}
+      <div className="mt-2 flex justify-center">
+        <span
+          className="inline-block rounded-full px-2.5 py-1 font-sans font-semibold uppercase"
+          style={{ background: "#FFB700", color: "#1A1A1A", fontSize: 10, letterSpacing: "0.08em", lineHeight: 1 }}
+        >
+          FENOMEN
         </span>
-        <span className="font-sans text-[12px] text-text-secondary">{daysLeft} gün kaldı</span>
       </div>
 
-      {/* Actions */}
-      <div className="mt-4 flex items-stretch gap-2">
-        <button
-          onClick={() => setSupported((s) => !s)}
-          className="flex-1 rounded-full font-sans font-medium text-[14px] transition-all active:scale-[0.98] inline-flex items-center justify-center gap-1.5"
-          style={{
-            height: 44,
-            background: supported ? "var(--color-success-bg)" : "#A32D2D",
-            color: supported ? "var(--color-success)" : "white",
-            border: supported ? "1px solid color-mix(in oklab, var(--color-success) 25%, transparent)" : "none",
-          }}
-        >
-          {supported ? (
-            <>
-              <IconCheck size={14} /> Destekledin
-            </>
-          ) : (
-            "Destekliyorum"
-          )}
-        </button>
-        <button
-          aria-label="Paylaş"
-          className="flex items-center justify-center rounded-xl bg-surface text-text-primary transition-colors hover:bg-bg-secondary"
-          style={{ width: 44, height: 44, border: "1px solid var(--color-border)" }}
-        >
-          <IconShare />
-        </button>
+      {/* Team affiliation */}
+      <div className="mt-3 inline-flex items-center gap-1.5 text-white/90">
+        <TeamLogo team="GS" size={20} />
+        <span className="font-sans text-[12px]">Galatasaray</span>
+        <span className="font-sans text-[12px] opacity-60">·</span>
+        <span className="font-sans text-[12px]">12 yıllık taraftar</span>
       </div>
-    </div>
+    </header>
   );
 }
 
-/* ───────── Tab strip ───────── */
+/* ───────── Score card ───────── */
 
-function TabStrip({ active, onChange }: { active: string; onChange: (v: string) => void }) {
-  const tabs = ["Açık Oylamalar", "Geçmiş", "Benim"];
+function ScoreCard() {
+  const stats = [
+    { icon: <CalendarCheck size={18} />, value: "23/30", label: "Maç günü" },
+    { icon: <MessageCircle size={18} />, value: "142", label: "Yorum" },
+    { icon: <ClipboardList size={18} />, value: "89", label: "Anket" },
+  ];
   return (
-    <div className="flex items-center gap-5 px-4" style={{ height: 44, borderBottom: "1px solid var(--color-border-tertiary)" }}>
-      {tabs.map((t) => {
-        const isActive = active === t;
-        return (
-          <button
-            key={t}
-            onClick={() => onChange(t)}
-            className="relative h-full font-sans text-[14px] transition-colors"
-            style={{
-              color: isActive ? "var(--color-text-primary)" : "var(--color-text-tertiary)",
-              fontWeight: isActive ? 500 : 400,
-            }}
-          >
-            {t}
-            {isActive && (
-              <span
-                className="absolute left-0 right-0 mx-auto rounded-full"
-                style={{ bottom: -1, height: 2, background: "#A32D2D" }}
-              />
-            )}
-          </button>
-        );
-      })}
-    </div>
+    <section
+      className="rounded-2xl bg-surface p-6"
+      style={{ border: "1px solid var(--color-border-tertiary)", boxShadow: "0 1px 2px rgba(0,0,0,0.03)" }}
+    >
+      <div className="font-display font-semibold text-[11px] text-text-secondary" style={{ letterSpacing: "0.12em" }}>
+        AKTİF TARAFTAR SKORU
+      </div>
+
+      <div className="mt-2 flex items-baseline gap-1">
+        <span className="font-display font-semibold leading-none" style={{ fontSize: 64, color: "#A32D2D" }}>
+          87
+        </span>
+        <span className="font-display font-semibold text-[24px] text-text-tertiary">/100</span>
+      </div>
+
+      <div className="mt-3 h-2 w-full overflow-hidden rounded-full" style={{ background: "var(--color-bg-secondary)" }}>
+        <div
+          className="h-full rounded-full transition-[width] duration-700 ease-out"
+          style={{ width: "87%", background: "linear-gradient(90deg, #A32D2D, #C73838)" }}
+        />
+      </div>
+
+      <div className="mt-5 grid grid-cols-3 gap-3">
+        {stats.map((s) => (
+          <div key={s.label} className="rounded-xl px-3 py-2.5" style={{ background: "var(--color-bg-secondary)" }}>
+            <div className="text-text-secondary">{s.icon}</div>
+            <div className="mt-1 font-display font-semibold text-[16px] text-text-primary leading-tight">
+              {s.value}
+            </div>
+            <div className="font-sans text-[11px] text-text-secondary">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
-/* ───────── Bottom CTA banner ───────── */
+/* ───────── Forma reward ───────── */
 
-function PromoBanner() {
+function FormaCard() {
   return (
-    <div
-      className="flex items-center justify-between gap-3 px-4"
+    <section
+      className="relative overflow-hidden rounded-2xl p-5"
       style={{
-        height: 60,
-        background: "#F0E4D0",
-        borderTop: "1px solid var(--color-border)",
+        background: "linear-gradient(135deg, #FFB700 0%, #FFA500 100%)",
+        boxShadow: "0 12px 30px -12px rgba(255,165,0,0.55)",
       }}
     >
-      <div className="min-w-0">
-        <div className="font-sans font-medium text-[13px] leading-tight text-text-primary truncate">
-          Sıradaki gündemini sen oluştur
+      {/* decorative shine */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.45) 0%, transparent 70%)" }}
+      />
+
+      <div className="relative flex items-center gap-4">
+        <div
+          className="flex shrink-0 items-center justify-center rounded-2xl"
+          style={{ width: 88, height: 88, background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.4)" }}
+        >
+          <Shirt size={56} strokeWidth={1.4} color="#1A1A1A" />
         </div>
-        <div className="font-sans text-[11px] text-text-secondary">Anında oylamaya açılır</div>
+
+        <div className="min-w-0 flex-1 text-[#1A1A1A]">
+          <div className="font-display font-semibold text-[11px]" style={{ letterSpacing: "0.12em" }}>
+            AYIN FORMASI
+          </div>
+          <div className="mt-1 font-display font-semibold text-[22px] leading-tight">13 puan kaldı</div>
+          <div className="mt-1 font-sans text-[12px] leading-[16px] opacity-80">
+            Bu ayın forması: GS 25-26 sezon dış saha
+          </div>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(26,26,26,0.18)" }}>
+            <div className="h-full rounded-full bg-white transition-[width] duration-700 ease-out" style={{ width: "87%" }} />
+          </div>
+        </div>
       </div>
-      <button
-        className="shrink-0 rounded-full font-sans font-medium text-[13px] transition-transform active:scale-95"
-        style={{
-          height: 36,
-          padding: "0 14px",
-          background: "#FFB700",
-          color: "#1A1A1A",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
-        }}
-      >
-        199 TL'ye Aç
+    </section>
+  );
+}
+
+/* ───────── Section header ───────── */
+
+function SectionHeader({ title, count }: { title: string; count?: number }) {
+  return (
+    <div className="mb-3 flex items-center justify-between">
+      <h2 className="font-display font-semibold text-[18px] text-text-primary">
+        {title}
+        {count !== undefined && <span className="text-text-tertiary"> ({count})</span>}
+      </h2>
+      <button className="inline-flex items-center gap-0.5 font-sans text-[13px] text-text-secondary hover:text-text-primary">
+        Tümü <ChevronRight size={16} />
       </button>
     </div>
   );
 }
 
-/* ───────── Bottom tab bar (line icons) ───────── */
+/* ───────── Friends ───────── */
+
+function FriendsRow() {
+  const friends = [
+    { name: "Mert", color: "#A90432" },
+    { name: "Selin", color: "#FFE600" },
+    { name: "Burak", color: "#1A1A1A" },
+    { name: "Ayşe", color: "#A90432" },
+    { name: "Cem", color: "#003F87" },
+    { name: "Defne", color: "#A90432" },
+    { name: "Eren", color: "#FFE600" },
+  ];
+  return (
+    <section>
+      <SectionHeader title="Arkadaşlar" count={24} />
+      <div className="-mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex gap-4 pb-1">
+          {/* Invite tile */}
+          <button className="flex w-16 shrink-0 flex-col items-center gap-1.5">
+            <div
+              className="flex items-center justify-center rounded-full text-text-secondary"
+              style={{ width: 60, height: 60, border: "2px dashed var(--color-border)", background: "transparent" }}
+            >
+              <Plus size={22} />
+            </div>
+            <span className="font-sans text-[12px] text-text-secondary">Davet Et</span>
+          </button>
+          {friends.map((f) => (
+            <div key={f.name} className="flex w-16 shrink-0 flex-col items-center gap-1.5">
+              <FriendAvatar teamColor={f.color} />
+              <span className="font-sans text-[12px] text-text-primary">{f.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────── Activity ───────── */
+
+function ActivityList() {
+  const items = [
+    { Icon: Bell, text: "Mert K. seni tribüne çağırdı", time: "2s" },
+    { Icon: MessageCircle, text: "Hıncal Uluç yorumunu beğendi", time: "1sa" },
+    { Icon: Trophy, text: "#icardiKalsın hashtag'i hedefe ulaştı", time: "3sa" },
+    { Icon: Shirt, text: "Eylül forma ödülünü kazandın", time: "Dün" },
+    { Icon: Bell, text: "Galatasaray - Fenerbahçe maçı başlıyor", time: "2g" },
+  ];
+  return (
+    <section>
+      <SectionHeader title="Etkinlik" />
+      <div
+        className="overflow-hidden rounded-2xl bg-surface"
+        style={{ border: "1px solid var(--color-border-tertiary)" }}
+      >
+        {items.map((it, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-3 px-4 py-3"
+            style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border-tertiary)" }}
+          >
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-text-primary"
+              style={{ background: "var(--color-bg-secondary)" }}
+            >
+              <it.Icon size={18} />
+            </div>
+            <span className="flex-1 font-sans text-[14px] text-text-primary">{it.text}</span>
+            <span className="font-sans text-[12px] text-text-tertiary">{it.time}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ───────── Settings shortcut grid ───────── */
+
+function SettingsGrid() {
+  const items = [
+    { Icon: Bell, label: "Bildirimler" },
+    { Icon: Palette, label: "Tema" },
+    { Icon: Crown, label: "Premium" },
+    { Icon: HelpCircle, label: "Yardım" },
+  ];
+  return (
+    <section>
+      <SectionHeader title="Ayarlar" />
+      <div className="grid grid-cols-2 gap-3">
+        {items.map((it) => (
+          <button
+            key={it.label}
+            className="flex items-center gap-3 rounded-xl bg-surface p-4 text-left transition-colors hover:bg-bg-secondary"
+            style={{ border: "1px solid var(--color-border-tertiary)" }}
+          >
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-full"
+              style={{ background: "var(--color-bg-secondary)", color: "#A32D2D" }}
+            >
+              <it.Icon size={18} />
+            </div>
+            <span className="font-sans font-medium text-[14px] text-text-primary">{it.label}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ───────── Bottom tab bar ───────── */
 
 function BottomTabBar() {
   const tabs = [
     { key: "home", label: "Ana Sayfa", path: "M4 11 L12 4 L20 11 V20 H14 V14 H10 V20 H4 Z" },
     { key: "news", label: "Gündem", path: "M5 5 H19 V19 H5 Z M8 9 H16 M8 13 H16 M8 17 H13" },
-    { key: "match", label: "Maç", path: "M12 4 V20 M4 12 H20 M6 6 L18 18 M18 6 L6 18", circle: true },
-    { key: "community", label: "Topluluk", path: "M12 7 V19 M5 11 H19", active: true, hash: true },
-    { key: "profile", label: "Profil", path: "M12 12 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M4 21 C5 17 8.5 15.5 12 15.5 C15.5 15.5 19 17 20 21" },
+    { key: "match", label: "Maç" },
+    { key: "community", label: "Topluluk", hash: true },
+    { key: "profile", label: "Profil", path: "M12 12 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M4 21 C5 17 8.5 15.5 12 15.5 C15.5 15.5 19 17 20 21", active: true },
   ];
   return (
     <nav
-      className="grid grid-cols-5"
+      className="sticky bottom-0 grid grid-cols-5"
       style={{ height: 80, background: "white", borderTop: "1px solid var(--color-border-tertiary)" }}
     >
       {tabs.map((t) => (
         <button key={t.key} className="flex flex-col items-center justify-center gap-1 pt-2">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={t.active ? "#A32D2D" : "#999"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             {t.hash ? (
-              <>
-                <path d="M9 4 L7 20 M17 4 L15 20 M4 9 H20 M4 15 H20" />
-              </>
-            ) : t.circle ? (
+              <path d="M9 4 L7 20 M17 4 L15 20 M4 9 H20 M4 15 H20" />
+            ) : t.key === "match" ? (
               <circle cx="12" cy="12" r="8" />
             ) : (
               <path d={t.path} />
             )}
           </svg>
-          <span
-            className="font-sans text-[11px]"
-            style={{ color: t.active ? "#A32D2D" : "#999", fontWeight: t.active ? 500 : 400 }}
-          >
+          <span className="font-sans text-[11px]" style={{ color: t.active ? "#A32D2D" : "#999", fontWeight: t.active ? 500 : 400 }}>
             {t.label}
           </span>
         </button>
@@ -355,9 +388,7 @@ function BottomTabBar() {
 
 /* ───────── Screen ───────── */
 
-function CommunityScreen() {
-  const [tab, setTab] = useState("Açık Oylamalar");
-
+function ProfileScreen() {
   return (
     <div className="min-h-screen w-full" style={{ background: "var(--color-bg-primary)" }}>
       <div
@@ -369,85 +400,27 @@ function CommunityScreen() {
           boxShadow: "0 30px 80px rgba(0,0,0,0.15)",
         }}
       >
-        <StatusBar />
+        <Hero />
 
-        {/* App bar */}
-        <header
-          className="sticky top-0 z-30 flex items-center justify-between px-4"
-          style={{ height: 56, background: "var(--color-bg-primary)", borderBottom: "1px solid var(--color-border-tertiary)" }}
-        >
-          <h1 className="font-display font-semibold text-[24px] text-text-primary">Topluluk</h1>
-          <button
-            className="flex items-center justify-center rounded-full bg-surface text-text-primary transition-transform active:scale-95"
-            style={{ width: 36, height: 36, border: "1px solid var(--color-border)" }}
-            aria-label="Hashtag aç"
-          >
-            <IconPlus />
-          </button>
-        </header>
+        {/* Pulled-up content stack */}
+        <main className="-mt-4 flex-1 space-y-5 px-4 pb-8">
+          <ScoreCard />
+          <FormaCard />
+          <FriendsRow />
+          <ActivityList />
+          <SettingsGrid />
 
-        {/* Hero + tabs + cards */}
-        <div className="flex-1">
-          <div className="px-4 pt-4">
-            <HeroCard />
+          {/* Footer */}
+          <div className="pt-4 text-center">
+            <button className="font-sans font-medium text-[14px]" style={{ color: "#A32D2D" }}>
+              Çıkış yap
+            </button>
+            <div className="mt-3 font-sans text-[10px] text-text-tertiary" style={{ letterSpacing: "0.04em" }}>
+              TRİBÜN v1.0.0 · Made with ❤️ in Türkiye
+            </div>
           </div>
+        </main>
 
-          <div className="mt-4">
-            <TabStrip active={tab} onChange={setTab} />
-          </div>
-
-          <div className="space-y-3 px-4 py-4">
-            <HashtagCard
-              proposer={{ name: "Mert K.", role: "fenomen" }}
-              tag="#icardiKalsın"
-              description="Mauro Icardi'nin sözleşmesi yenilensin. Tribün onun kalmasını istiyor."
-              votes={12847}
-              goal={20000}
-              daysLeft={3}
-              state="featured"
-            />
-            <HashtagCard
-              proposer={{ name: "Hıncal Uluç", role: "yazar" }}
-              tag="#derbiyeHazırız"
-              description="Cumartesi günü tüm tribün stadda. Saat 19:00 Türk Telekom'a yürüyüş."
-              votes={8420}
-              goal={15000}
-              daysLeft={2}
-              state="open"
-              initiallySupported
-            />
-            <HashtagCard
-              proposer={{ name: "Hagi", role: "efsane" }}
-              tag="#altyapıyaYatırım"
-              description="Florya tesislerinin yenilenmesi ve U19 takımına yeni teknik direktör."
-              votes={5210}
-              goal={10000}
-              daysLeft={5}
-              state="open"
-            />
-            <HashtagCard
-              proposer={{ name: "Burak Y.", role: "kongre" }}
-              tag="#şeffafFinans"
-              description="Yönetim kurulu üç ayda bir detaylı mali rapor yayınlasın."
-              votes={3895}
-              goal={12000}
-              daysLeft={6}
-              state="open"
-            />
-            <HashtagCard
-              proposer={{ name: "ultrAslan_Cem", role: "fenomen" }}
-              tag="#tribünIndirim"
-              description="Genç taraftar için kombine bilet fiyatları yüzde 40 düşürülsün."
-              votes={1847}
-              goal={8000}
-              daysLeft={9}
-              state="open"
-            />
-            <div className="h-2" />
-          </div>
-        </div>
-
-        <PromoBanner />
         <BottomTabBar />
       </div>
     </div>
