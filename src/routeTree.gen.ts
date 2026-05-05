@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as KycRouteImport } from './routes/kyc'
+import { Route as GundemRouteImport } from './routes/gundem'
 import { Route as IndexRouteImport } from './routes/index'
 
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -23,6 +24,11 @@ const KycRoute = KycRouteImport.update({
   path: '/kyc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GundemRoute = GundemRouteImport.update({
+  id: '/gundem',
+  path: '/gundem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/gundem': typeof GundemRoute
   '/kyc': typeof KycRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/kyc' | '/onboarding'
+  fullPaths: '/' | '/gundem' | '/kyc' | '/onboarding'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kyc' | '/onboarding'
-  id: '__root__' | '/' | '/kyc' | '/onboarding'
+  to: '/' | '/gundem' | '/kyc' | '/onboarding'
+  id: '__root__' | '/' | '/gundem' | '/kyc' | '/onboarding'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GundemRoute: typeof GundemRoute
   KycRoute: typeof KycRoute
   OnboardingRoute: typeof OnboardingRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KycRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gundem': {
+      id: '/gundem'
+      path: '/gundem'
+      fullPath: '/gundem'
+      preLoaderRoute: typeof GundemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GundemRoute: GundemRoute,
   KycRoute: KycRoute,
   OnboardingRoute: OnboardingRoute,
 }
