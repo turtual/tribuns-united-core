@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { PhoneFrame } from "@/components/tribun/Layout";
+import { MatchCard } from "@/components/tribun/MatchCard";
 
 export const Route = createFileRoute("/mac")({
   head: () => ({ meta: [{ title: "TRİBÜN — Maç" }] }),
