@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Settings, Bell, MessageCircle, Trophy, Shirt, ChevronRight, CalendarCheck, ClipboardList, Plus, Palette, Crown, HelpCircle } from "lucide-react";
+import { Settings, Bell, MessageCircle, Trophy, Shirt, ChevronRight, CalendarCheck, ClipboardList, Plus, Palette, Crown, HelpCircle, Check } from "lucide-react";
 import { PhoneFrame } from "@/components/tribun/Layout";
 import { Avatar } from "@/components/tribun/Avatar";
+import { useTheme, PREFERENCE_LABELS, type ThemePreference } from "@/lib/tribun/theme";
 
 export const Route = createFileRoute("/profil")({
   head: () => ({ meta: [{ title: "TRİBÜN — Profil" }] }),
@@ -9,6 +10,15 @@ export const Route = createFileRoute("/profil")({
 });
 
 function ProfilScreen() {
+  const { preference, setPreference, resolved, isMatchDay } = useTheme();
+  const resolvedLabel =
+    resolved === "gs-home" ? "GS Ev Sahibi" : resolved === "gs-away" ? "GS Deplasman" : "Standart";
+  const themeOptions: { value: ThemePreference; hint: string }[] = [
+    { value: "auto", hint: isMatchDay ? "Bugün maç günü — tema açık" : "Maç günleri otomatik" },
+    { value: "standard", hint: "Sade bej tema" },
+    { value: "force-home", hint: "Kırmızı tribün" },
+    { value: "force-away", hint: "Lacivert deplasman" },
+  ];
   return (
     <PhoneFrame withStatusBar={false}>
       <header className="relative px-6 pb-8 pt-2 text-center" style={{ background: "linear-gradient(180deg,#A90432 0%,#7C0319 35%, rgba(250,238,218,0) 100%)" }}>
@@ -117,6 +127,52 @@ function ProfilScreen() {
                 <span className="text-[12px] text-text-tertiary">{it.time}</span>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Tema */}
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-display font-semibold text-[18px]">Tema</h2>
+            <div className="inline-flex items-center gap-1.5 text-text-secondary">
+              <Palette size={14} />
+              <span className="text-[12px]">{resolvedLabel}</span>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-2xl bg-surface" style={{ border: "1px solid var(--color-border-tertiary)" }}>
+            {themeOptions.map((opt, i) => {
+              const active = preference === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => setPreference(opt.value)}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left"
+                  style={{
+                    borderTop: i === 0 ? "none" : "1px solid var(--color-border-tertiary)",
+                    background: active ? "var(--color-bg-secondary)" : "transparent",
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-center rounded-full"
+                    style={{
+                      width: 36,
+                      height: 36,
+                      background: active ? "#A32D2D" : "var(--color-bg-secondary)",
+                      color: active ? "#FFFFFF" : "#A32D2D",
+                    }}
+                  >
+                    {active ? <Check size={18} /> : <Palette size={18} />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-sans font-medium text-[14px]">{PREFERENCE_LABELS[opt.value]}</div>
+                    <div className="font-sans text-[12px] text-text-secondary">{opt.hint}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-2 px-1 text-[11px] italic text-text-tertiary">
+            Tema, maç ekranındaki paleti belirler. Otomatik modda fixture'a göre açılır.
           </div>
         </section>
 
