@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Settings, Bell, MessageCircle, Trophy, Shirt, ChevronRight, CalendarCheck, ClipboardList, Plus, Palette, Crown, HelpCircle } from "lucide-react";
+import { Settings, Bell, MessageCircle, Trophy, Shirt, ChevronRight, CalendarCheck, ClipboardList, Plus, Palette, Crown, HelpCircle, Check } from "lucide-react";
 import { PhoneFrame } from "@/components/tribun/Layout";
 import { Avatar } from "@/components/tribun/Avatar";
+import { useTheme, PREFERENCE_LABELS, type ThemePreference } from "@/lib/tribun/theme";
 
 export const Route = createFileRoute("/profil")({
   head: () => ({ meta: [{ title: "TRİBÜN — Profil" }] }),
