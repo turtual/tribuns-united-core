@@ -16,53 +16,107 @@ export function StatusBar({ tone = "dark" }: { tone?: "dark" | "light" }) {
   );
 }
 
-/* Bottom tab bar — route-aware */
+/* Bottom tab bar — floating dark pill, route-aware */
 type TabKey = "home" | "gundem" | "mac" | "topluluk" | "profil";
 
 interface TabDef {
   key: TabKey;
   label: string;
   to: "/" | "/gundem" | "/mac" | "/topluluk" | "/profil";
-  path: string; // svg path
-  hash?: boolean;
-  circle?: boolean;
+  icon: (active: boolean) => ReactNode;
 }
 
+const ACCENT = "#D8FF3C"; // lime/yellow accent like the reference
+
 const TABS: TabDef[] = [
-  { key: "home", label: "Ana Sayfa", to: "/", path: "M4 11 L12 4 L20 11 V20 H14 V14 H10 V20 H4 Z" },
-  { key: "gundem", label: "Gündem", to: "/gundem", path: "M5 5 H19 V19 H5 Z M8 9 H16 M8 13 H16 M8 17 H13" },
-  { key: "mac", label: "Maç", to: "/mac", path: "", circle: true },
-  { key: "topluluk", label: "Topluluk", to: "/topluluk", path: "", hash: true },
-  { key: "profil", label: "Profil", to: "/profil", path: "M12 12 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M4 21 C5 17 8.5 15.5 12 15.5 C15.5 15.5 19 17 20 21" },
+  {
+    key: "home",
+    label: "Ana Sayfa",
+    to: "/",
+    icon: (a) => (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill={a ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+        <path d="M3 11 L12 3 L21 11 V20 a1 1 0 0 1 -1 1 H15 V14 H9 V21 H4 a1 1 0 0 1 -1 -1 Z" />
+      </svg>
+    ),
+  },
+  {
+    key: "gundem",
+    label: "Gündem",
+    to: "/gundem",
+    icon: () => (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round">
+        <path d="M5 4 H17 a2 2 0 0 1 2 2 V20 H7 a2 2 0 0 1 -2 -2 Z" />
+        <path d="M9 9 H15 M9 13 H15 M9 17 H13" />
+      </svg>
+    ),
+  },
+  {
+    key: "mac",
+    label: "Maç",
+    to: "/mac",
+    icon: () => (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 3 L14 8 L19 9 M12 3 L10 8 L5 9 M5 9 L7 15 L12 17 L17 15 L19 9 M7 15 L5 20 M17 15 L19 20 M12 17 L12 21" strokeLinejoin="round" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    key: "topluluk",
+    label: "Topluluk",
+    to: "/topluluk",
+    icon: () => (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 4 L7 20 M17 4 L15 20 M4 9 H20 M3 15 H19" />
+      </svg>
+    ),
+  },
+  {
+    key: "profil",
+    label: "Profil",
+    to: "/profil",
+    icon: () => (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="9" r="4" />
+        <path d="M4 21 C5 16.5 8.5 14.5 12 14.5 C15.5 14.5 19 16.5 20 21" />
+      </svg>
+    ),
+  },
 ];
 
 export function BottomTabBar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <nav
-      className="grid grid-cols-5"
-      style={{ height: 80, background: "white", borderTop: "1px solid var(--color-border-tertiary)" }}
+      className="flex items-center justify-between"
+      style={{
+        background: "#1F1F1F",
+        borderRadius: 999,
+        padding: "10px 14px",
+        boxShadow: "0 12px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04) inset",
+      }}
     >
       {TABS.map((t) => {
         const active =
           t.to === "/" ? pathname === "/" : pathname === t.to || pathname.startsWith(t.to + "/");
-        const color = active ? "#A32D2D" : "#999";
         return (
           <Link
             key={t.key}
             to={t.to}
-            className="flex flex-col items-center justify-center gap-1 pt-2"
+            className="flex flex-col items-center justify-center transition-all"
+            style={{
+              color: active ? ACCENT : "rgba(255,255,255,0.85)",
+              filter: active ? `drop-shadow(0 0 10px ${ACCENT}80)` : "none",
+              gap: 2,
+              padding: "4px 6px",
+              minWidth: 56,
+            }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              {t.hash ? (
-                <path d="M9 4 L7 20 M17 4 L15 20 M4 9 H20 M4 15 H20" />
-              ) : t.circle ? (
-                <circle cx="12" cy="12" r="8" />
-              ) : (
-                <path d={t.path} />
-              )}
-            </svg>
-            <span className="font-sans text-[11px]" style={{ color, fontWeight: active ? 500 : 400 }}>
+            {t.icon(active)}
+            <span
+              className="font-sans text-[11px]"
+              style={{ fontWeight: active ? 600 : 500, letterSpacing: 0.1 }}
+            >
               {t.label}
             </span>
           </Link>
@@ -72,7 +126,7 @@ export function BottomTabBar() {
   );
 }
 
-/* iPhone-like phone frame container */
+/* iPhone-like phone frame container with sticky/fixed bottom nav */
 export function PhoneFrame({
   children,
   bg = "var(--color-bg-primary)",
@@ -91,17 +145,32 @@ export function PhoneFrame({
   return (
     <div className={`min-h-screen w-full ${themeClass ?? ""}`} style={{ background: bg }}>
       <div
-        className="mx-auto flex flex-col"
+        className="mx-auto relative flex flex-col"
         style={{
           width: 393,
-          minHeight: 852,
+          height: 852,
           background: bg,
           boxShadow: "0 30px 80px rgba(0,0,0,0.18)",
+          overflow: "hidden",
         }}
       >
         {withStatusBar && <StatusBar tone={statusBarTone} />}
-        <div className="flex-1 flex flex-col">{children}</div>
-        {withTabs && <BottomTabBar />}
+        <div
+          className="flex-1 flex flex-col overflow-y-auto"
+          style={{ paddingBottom: withTabs ? 110 : 0 }}
+        >
+          {children}
+        </div>
+        {withTabs && (
+          <div
+            className="absolute left-0 right-0 px-4"
+            style={{ bottom: 18, pointerEvents: "none" }}
+          >
+            <div style={{ pointerEvents: "auto" }}>
+              <BottomTabBar />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
