@@ -26,7 +26,8 @@ interface TabDef {
   icon: (active: boolean) => ReactNode;
 }
 
-const ACCENT = "#D8FF3C"; // lime/yellow accent like the reference
+const ACCENT = "#A32D2D"; // TRİBÜN signal red — brand-aligned
+const INACTIVE = "#999999"; // text-tertiary
 
 const TABS: TabDef[] = [
   {
@@ -90,10 +91,10 @@ export function BottomTabBar() {
     <nav
       className="flex items-center justify-between"
       style={{
-        background: "#1F1F1F",
+        background: "#FFFFFF",
         borderRadius: 999,
         padding: "10px 14px",
-        boxShadow: "0 12px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04) inset",
+        boxShadow: "0 8px 24px rgba(26,26,26,0.08), 0 0 0 1px rgba(212,196,168,0.5) inset",
       }}
     >
       {TABS.map((t) => {
@@ -105,8 +106,7 @@ export function BottomTabBar() {
             to={t.to}
             className="flex flex-col items-center justify-center transition-all"
             style={{
-              color: active ? ACCENT : "rgba(255,255,255,0.85)",
-              filter: active ? `drop-shadow(0 0 10px ${ACCENT}80)` : "none",
+              color: active ? ACCENT : INACTIVE,
               gap: 2,
               padding: "4px 6px",
               minWidth: 56,
