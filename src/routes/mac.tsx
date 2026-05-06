@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { PhoneFrame } from "@/components/tribun/Layout";
+import { MatchCard } from "@/components/tribun/MatchCard";
 
 export const Route = createFileRoute("/mac")({
   head: () => ({ meta: [{ title: "TRİBÜN — Maç" }] }),
@@ -74,41 +75,56 @@ function MacScreen() {
             Şu an bu kategoride maç yok.
           </div>
         )}
-        {list.map((m) => (
-          <div
-            key={m.id}
-            className="rounded-2xl bg-surface p-4"
-            style={{ border: m.isMine ? "2px solid #A32D2D" : "1px solid var(--color-border-tertiary)" }}
-          >
-            <div className="t-tiny text-text-tertiary">{m.league}</div>
-            <div className="mt-2 grid grid-cols-3 items-center">
-              <TeamCell team={m.home} score={m.homeScore} />
-              <div className="text-center">
-                {m.state === "live" ? (
-                  <div className="font-sans font-semibold text-[12px]" style={{ color: "#A32D2D" }}>CANLI {m.time}</div>
-                ) : (
-                  <div className="font-display font-semibold text-[18px]">{m.time}</div>
-                )}
+        {list.map((m) => {
+          if (m.state === "past") {
+            return (
+              <div
+                key={m.id}
+                className="rounded-2xl bg-surface p-4"
+                style={{ border: m.isMine ? "2px solid #A32D2D" : "1px solid var(--color-border-tertiary)" }}
+              >
+                <div className="t-tiny text-text-tertiary">{m.league}</div>
+                <div className="mt-2 grid grid-cols-3 items-center">
+                  <TeamCell team={m.home} score={m.homeScore} />
+                  <div className="text-center font-display font-semibold text-[18px]">{m.time}</div>
+                  <TeamCell team={m.away} score={m.awayScore} align="end" />
+                </div>
+                <button className="mt-3 flex h-11 w-full items-center justify-center rounded-full bg-bg-secondary font-sans font-medium text-[14px] text-text-primary">
+                  Maç Özeti
+                </button>
               </div>
-              <TeamCell team={m.away} score={m.awayScore} align="end" />
-            </div>
-            <div className="mt-3">
-              {m.isMine && m.state !== "past" ? (
+            );
+          }
+          const leagueBg =
+            m.state === "live"
+              ? "radial-gradient(ellipse at center, rgba(253,185,18,0.35), rgba(124,3,25,0.95) 70%), #2a0610"
+              : "radial-gradient(ellipse at center, rgba(216,255,60,0.25), rgba(0,0,0,0.95) 70%), #0a0a0a";
+          return (
+            <div key={m.id} className="space-y-2">
+              <MatchCard
+                state={m.state === "live" ? "live" : "upcoming"}
+                to={m.isMine && m.state === "live" ? "/mac/canli" : undefined}
+                league={{ name: m.league.toUpperCase(), bg: leagueBg }}
+                home={m.home}
+                away={m.away}
+                homeScore={m.homeScore}
+                awayScore={m.awayScore}
+                time={m.time}
+                venue={m.state === "live" ? "RAMS PARK" : undefined}
+              />
+              {m.isMine && m.state === "live" && (
                 <Link to="/mac/canli" className="flex h-11 items-center justify-center gap-1 rounded-full font-sans font-medium text-[14px] text-white" style={{ background: "#A32D2D" }}>
                   Tribüne Gir <ChevronRight size={14} />
                 </Link>
-              ) : m.state === "past" ? (
-                <button className="flex h-11 w-full items-center justify-center rounded-full bg-bg-secondary font-sans font-medium text-[14px] text-text-primary">
-                  Maç Özeti
-                </button>
-              ) : (
+              )}
+              {m.state === "today" && !m.isMine && (
                 <button className="flex h-11 w-full items-center justify-center rounded-full font-sans font-medium text-[14px]" style={{ border: "1px solid var(--color-border)", color: "var(--color-text-secondary)" }}>
                   Misafir olarak izle
                 </button>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </main>
     </PhoneFrame>
   );

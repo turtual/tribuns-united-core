@@ -3,6 +3,7 @@ import { Bell, ChevronRight } from "lucide-react";
 import { PhoneFrame } from "@/components/tribun/Layout";
 import { Avatar } from "@/components/tribun/Avatar";
 import { PollCard } from "@/components/tribun/PollCard";
+import { MatchCard } from "@/components/tribun/MatchCard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,29 +35,36 @@ function HomeScreen() {
 
       <main className="flex-1 space-y-5 px-4 py-4">
         {/* Match day card */}
-        <Link to="/mac/canli" className="block">
-          <div
-            className="relative overflow-hidden rounded-2xl p-5 text-white"
-            style={{ background: "linear-gradient(135deg, #A90432 0%, #7C0319 100%)", minHeight: 160 }}
-          >
-            <span className="absolute left-0 right-0 top-0 h-1" style={{ background: "#FDB912" }} />
-            <div className="t-tiny opacity-80">BUGÜN · 21:00 · RAMS PARK</div>
-            <div className="mt-3 flex items-center justify-between">
-              <div className="flex flex-col items-center">
-                <div className="h-12 w-12 rounded-full" style={{ background: "linear-gradient(135deg, #FDB912, #A90432)" }} />
-                <div className="mt-1 font-display font-semibold text-[14px]">GS</div>
-              </div>
-              <div className="font-display font-semibold text-[20px]">vs</div>
-              <div className="flex flex-col items-center">
-                <div className="h-12 w-12 rounded-full" style={{ background: "linear-gradient(135deg, #FFE600, #00296B)" }} />
-                <div className="mt-1 font-display font-semibold text-[14px]">FB</div>
-              </div>
-            </div>
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 font-sans font-medium text-[14px]" style={{ color: "#A32D2D" }}>
-              Tribüne Gir <ChevronRight size={14} />
-            </div>
-          </div>
-        </Link>
+        <MatchCard
+          state="live"
+          to="/mac/canli"
+          league={{
+            name: "SÜPER LİG",
+            bg: "radial-gradient(ellipse at center, rgba(253,185,18,0.35), rgba(124,3,25,0.95) 70%), #2a0610",
+          }}
+          home={{ code: "GS", name: "Galatasaray", bg: "linear-gradient(135deg,#FDB912,#A90432)" }}
+          away={{ code: "FB", name: "Fenerbahçe", bg: "linear-gradient(135deg,#FFE600,#00296B)" }}
+          homeScore={2}
+          awayScore={1}
+          time="67:12"
+          venue="RAMS PARK"
+          group="34. Hafta"
+        />
+
+        {/* Upcoming */}
+        <MatchCard
+          state="upcoming"
+          to="/mac"
+          league={{
+            name: "UEFA CHAMPIONS LEAGUE",
+            bg: "radial-gradient(ellipse at center, rgba(216,255,60,0.3), rgba(0,0,0,0.95) 70%), #060f06",
+          }}
+          home={{ code: "GS", name: "Galatasaray", bg: "linear-gradient(135deg,#FDB912,#A90432)" }}
+          away={{ code: "MUN", name: "Manchester United", bg: "linear-gradient(135deg,#DA291C,#000000)" }}
+          time="22:00"
+          venue="OLD TRAFFORD"
+          group="Group H"
+        />
 
         {/* Gündem strip */}
         <section>
