@@ -10,6 +10,15 @@ export const Route = createFileRoute("/profil")({
 });
 
 function ProfilScreen() {
+  const { preference, setPreference, resolved, isMatchDay } = useTheme();
+  const resolvedLabel =
+    resolved === "gs-home" ? "GS Ev Sahibi" : resolved === "gs-away" ? "GS Deplasman" : "Standart";
+  const themeOptions: { value: ThemePreference; hint: string }[] = [
+    { value: "auto", hint: isMatchDay ? "Bugün maç günü — tema açık" : "Maç günleri otomatik" },
+    { value: "standard", hint: "Sade bej tema" },
+    { value: "force-home", hint: "Kırmızı tribün" },
+    { value: "force-away", hint: "Lacivert deplasman" },
+  ];
   return (
     <PhoneFrame withStatusBar={false}>
       <header className="relative px-6 pb-8 pt-2 text-center" style={{ background: "linear-gradient(180deg,#A90432 0%,#7C0319 35%, rgba(250,238,218,0) 100%)" }}>
