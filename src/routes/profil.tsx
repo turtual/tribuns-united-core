@@ -130,6 +130,52 @@ function ProfilScreen() {
           </div>
         </section>
 
+        {/* Tema */}
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-display font-semibold text-[18px]">Tema</h2>
+            <div className="inline-flex items-center gap-1.5 text-text-secondary">
+              <Palette size={14} />
+              <span className="text-[12px]">{resolvedLabel}</span>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-2xl bg-surface" style={{ border: "1px solid var(--color-border-tertiary)" }}>
+            {themeOptions.map((opt, i) => {
+              const active = preference === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => setPreference(opt.value)}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left"
+                  style={{
+                    borderTop: i === 0 ? "none" : "1px solid var(--color-border-tertiary)",
+                    background: active ? "var(--color-bg-secondary)" : "transparent",
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-center rounded-full"
+                    style={{
+                      width: 36,
+                      height: 36,
+                      background: active ? "#A32D2D" : "var(--color-bg-secondary)",
+                      color: active ? "#FFFFFF" : "#A32D2D",
+                    }}
+                  >
+                    {active ? <Check size={18} /> : <Palette size={18} />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-sans font-medium text-[14px]">{PREFERENCE_LABELS[opt.value]}</div>
+                    <div className="font-sans text-[12px] text-text-secondary">{opt.hint}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-2 px-1 text-[11px] italic text-text-tertiary">
+            Tema, maç ekranındaki paleti belirler. Otomatik modda fixture'a göre açılır.
+          </div>
+        </section>
+
         {/* Settings grid */}
         <section className="grid grid-cols-2 gap-3">
           {[
