@@ -3,6 +3,7 @@ import { Bell, ChevronRight } from "lucide-react";
 import { PhoneFrame } from "@/components/tribun/Layout";
 import { Avatar } from "@/components/tribun/Avatar";
 import { PollCard } from "@/components/tribun/PollCard";
+import { MatchCard } from "@/components/tribun/MatchCard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
